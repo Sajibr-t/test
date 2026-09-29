@@ -1,4 +1,4 @@
-﻿/**
+/**
  * The public landing page at "/" - the marketing site a visitor sees first.
  *
  * Client component because the nav, mobile menu and newsletter form hold local
@@ -24,77 +24,77 @@ const NAV_LINKS: [string, string][] = [
 const CATEGORIES = [
   {
     name: 'Rompers & Onesies',
-    emoji: 'ðŸ‘¶',
-    desc: 'Everyday soft cotton essentials, NBâ€“24M',
+    emoji: '👶',
+    desc: 'Everyday soft cotton essentials, NB–24M',
     bg: '#E3F5FE',
-    badge: 'â­ Bestseller',
+    badge: '⭐ Bestseller',
     badgeBg: '#92DBFD',
     image: 'https://images.unsplash.com/photo-1784717424541-12e9eea29015?w=500&h=600&fit=crop&auto=format',
   },
   {
     name: 'Sleepwear Sets',
-    emoji: 'ðŸŒ™',
+    emoji: '🌙',
     desc: 'Cosy sleepers, sleep sacks & footed PJs',
     bg: '#E8F0FF',
-    badge: 'âœ¨ New Season',
+    badge: '✨ New Season',
     badgeBg: '#A0B4FF',
     image: 'https://images.unsplash.com/photo-1711313532755-47fe78c65a50?w=500&h=600&fit=crop&auto=format',
   },
   {
     name: 'Seasonal Sets',
-    emoji: 'ðŸŒ¸',
+    emoji: '🌸',
     desc: 'Curated looks updated every quarter',
     bg: '#E8FAF0',
-    badge: 'ðŸ‚ Q4 Ready',
+    badge: '🍂 Q4 Ready',
     badgeBg: '#6ECFA0',
     image: 'https://images.unsplash.com/photo-1774874017217-c441aa77c73b?w=500&h=600&fit=crop&auto=format',
   },
   {
     name: 'Accessories',
-    emoji: 'ðŸŽ€',
+    emoji: '🎀',
     desc: 'Hats, bibs, booties & adorable gift sets',
     bg: '#FFF5E0',
-    badge: 'ðŸ’› High Margin',
+    badge: '💛 High Margin',
     badgeBg: '#FFD6A5',
     image: 'https://images.unsplash.com/photo-1647761269925-9446047bda1d?w=500&h=600&fit=crop&auto=format',
   },
 ]
 
 const STEPS = [
-  { number: '01', emoji: 'ðŸ”', title: 'Browse & Pick', desc: 'Explore our seasonal lookbooks and order free samples. No account needed!' },
-  { number: '02', emoji: 'ðŸ“‹', title: 'Get Your Quote', desc: 'Tell us your quantities and get a personalised price sheet within 24 hours.' },
-  { number: '03', emoji: 'ðŸ“¦', title: 'Receive & Sell!', desc: 'Your order arrives in adorable branded packaging, ready for your shop floor.' },
+  { number: '01', emoji: '🔍', title: 'Browse & Pick', desc: 'Explore our seasonal lookbooks and order free samples. No account needed!' },
+  { number: '02', emoji: '📋', title: 'Get Your Quote', desc: 'Tell us your quantities and get a personalised price sheet within 24 hours.' },
+  { number: '03', emoji: '📦', title: 'Receive & Sell!', desc: 'Your order arrives in adorable branded packaging, ready for your shop floor.' },
 ]
 
 const TESTIMONIALS = [
   {
-    quote: "Our customers LOVE the quality. We've reordered three seasons in a row â€” TinyThreads just gets what boutiques need.",
+    quote: "Our customers LOVE the quality. We've reordered three seasons in a row — TinyThreads just gets what boutiques need.",
     name: 'Sophie Laurent',
-    role: 'Owner, Petit Boutique Â· Lyon, France',
-    avatar: 'ðŸ§¡',
+    role: 'Owner, Petit Boutique · Lyon, France',
+    avatar: '🧡',
     bg: '#E3F5FE',
   },
   {
     quote: "The organic certification helped us charge a premium and customers are proud to buy it. Couldn't be happier!",
     name: 'Mara Okonkwo',
-    role: 'Buyer, Little Willow Â· Cape Town',
-    avatar: 'ðŸ’š',
+    role: 'Buyer, Little Willow · Cape Town',
+    avatar: '💚',
     bg: '#E8FAF0',
   },
   {
     quote: "Fast delivery, gorgeous unboxing, and a team that's genuinely sweet to deal with. 10/10 would recommend.",
     name: 'Camille Rossi',
-    role: 'Founder, Nido Kids Â· Milan',
-    avatar: 'ðŸ’œ',
+    role: 'Founder, Nido Kids · Milan',
+    avatar: '💜',
     bg: '#EDE8FF',
   },
 ]
 
 const PERKS = [
-  { emoji: 'ðŸŒ¿', title: 'GOTS Organic Cotton', desc: 'Safe for newborn skin â€” certified from field to final stitch.' },
-  { emoji: 'ðŸŽ', title: 'Retail-Ready Packaging', desc: 'Branded hang tags, tissue wrapping, or private label â€” your choice!' },
-  { emoji: 'ðŸ”„', title: 'Seasonal Restocks', desc: '4 fresh collections per year with 60-day advance order windows.' },
-  { emoji: 'ðŸ’Œ', title: 'Dedicated Support', desc: 'Every partner gets a personal account manager who truly cares.' },
+  { emoji: '🌿', title: 'GOTS Organic Cotton', desc: 'Safe for newborn skin — certified from field to final stitch.' },
+  { emoji: '🎁', title: 'Retail-Ready Packaging', desc: 'Branded hang tags, tissue wrapping, or private label — your choice!' },
+  { emoji: '🔄', title: 'Seasonal Restocks', desc: '4 fresh collections per year with 60-day advance order windows.' },
+  { emoji: '💌', title: 'Dedicated Support', desc: 'Every partner gets a personal account manager who truly cares.' },
 ]
 
 // Decorative floating shapes
@@ -121,7 +121,7 @@ export default function Landing() {
   return (
     <div style={{ fontFamily: 'var(--font-body)', background: '#FFFFFF', color: '#3D3540' }}>
 
-      {/* â”€â”€ NAV (floating pill) â”€â”€ */}
+      {/* ── NAV (floating pill) ── */}
       <header
         className="fixed top-4 left-1/2 z-50 flex items-center justify-between gap-4 px-4 py-2"
         style={{
@@ -140,7 +140,7 @@ export default function Landing() {
             className="w-8 h-8 rounded-full flex items-center justify-center text-base"
             style={{ background: '#92DBFD' }}
           >
-            ðŸ¼
+            🍼
           </div>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 800, color: '#3D3540' }}>
             Tiny<span style={{ color: '#2E9BD6' }}>Threads</span>
@@ -180,14 +180,14 @@ export default function Landing() {
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#5FC4F2'; (e.currentTarget as HTMLElement).style.transform = 'scale(1.04)' }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#92DBFD'; (e.currentTarget as HTMLElement).style.transform = 'scale(1)' }}
           >
-            ðŸ›ï¸ Shop
+            🛍️ Shop
           </Link>
           <button
             className="md:hidden w-8 h-8 rounded-full flex items-center justify-center text-base font-bold"
             style={{ background: '#E3F5FE', color: '#2E9BD6' }}
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? 'âœ•' : 'â˜°'}
+            {mobileOpen ? '✕' : '☰'}
           </button>
         </div>
       </header>
@@ -212,12 +212,12 @@ export default function Landing() {
             style={{ background: '#92DBFD', color: '#0E4E6E' }}
             onClick={() => setMobileOpen(false)}
           >
-            ðŸ›ï¸ Shop the Catalogue
+            🛍️ Shop the Catalogue
           </Link>
         </div>
       )}
 
-      {/* â”€â”€ HERO â”€â”€ */}
+      {/* ── HERO ── */}
       <section className="relative pt-24 overflow-hidden">
         {/* Pastel blob background */}
         <div
@@ -241,7 +241,7 @@ export default function Landing() {
               className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-6"
               style={{ background: '#E3F5FE', color: '#2E9BD6', letterSpacing: '0.05em' }}
             >
-              ðŸŒŸ PREMIUM BABY WHOLESALE
+              🌟 PREMIUM BABY WHOLESALE
             </div>
             <h1
               className="leading-none mb-6"
@@ -267,11 +267,11 @@ export default function Landing() {
               <br />your boutique
               <br />will{' '}
               <span style={{ color: '#6ECFA0' }}>
-                ðŸ’š love.
+                💚 love.
               </span>
             </h1>
             <p className="text-lg mb-10 max-w-md leading-relaxed" style={{ color: '#9B8FA0', fontWeight: 500 }}>
-              Organic cotton essentials for newborns & toddlers. Designed for boutiques, built for bulk â€” with minimums that don&apos;t hurt small shops.
+              Organic cotton essentials for newborns & toddlers. Designed for boutiques, built for bulk — with minimums that don&apos;t hurt small shops.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <a
@@ -281,7 +281,7 @@ export default function Landing() {
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)')}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.transform = 'translateY(0)')}
               >
-                Browse Collections ðŸ›ï¸
+                Browse Collections 🛍️
               </a>
               <a
                 href="#how"
@@ -290,13 +290,13 @@ export default function Landing() {
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#FFF5E0')}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'transparent')}
               >
-                How It Works âœ¨
+                How It Works ✨
               </a>
             </div>
 
             {/* Trust pills */}
             <div className="mt-10 flex flex-wrap gap-2">
-              {['ðŸŒ¿ GOTS Certified', 'ðŸš¢ Ships Worldwide', 'ðŸ“¦ MOQ from 24 units', 'â­ 500+ Boutiques'].map((t) => (
+              {['🌿 GOTS Certified', '🚢 Ships Worldwide', '📦 MOQ from 24 units', '⭐ 500+ Boutiques'].map((t) => (
                 <span
                   key={t}
                   className="text-xs font-bold px-4 py-2 rounded-full"
@@ -337,18 +337,18 @@ export default function Landing() {
               className="absolute z-10 px-4 py-3 rounded-2xl"
               style={{ bottom: '30%', right: 0, background: '#fff', boxShadow: '0 8px 24px rgba(0,0,0,0.10)', border: '2px solid #E3F5FE' }}
             >
-              <div className="text-xs font-bold mb-0.5" style={{ color: '#2E9BD6' }}>NEW ARRIVALS ðŸŽ€</div>
+              <div className="text-xs font-bold mb-0.5" style={{ color: '#2E9BD6' }}>NEW ARRIVALS 🎀</div>
               <div className="text-sm font-bold" style={{ color: '#3D3540' }}>Spring / Summer 2027</div>
             </div>
             {/* Star decoration */}
-            <div className="absolute text-3xl" style={{ top: -12, left: '25%', transform: 'rotate(-15deg)' }}>â­</div>
-            <div className="absolute text-xl" style={{ bottom: '5%', right: '5%', transform: 'rotate(10deg)' }}>ðŸŒ¸</div>
+            <div className="absolute text-3xl" style={{ top: -12, left: '25%', transform: 'rotate(-15deg)' }}>⭐</div>
+            <div className="absolute text-xl" style={{ bottom: '5%', right: '5%', transform: 'rotate(10deg)' }}>🌸</div>
           </div>
         </div>
 
         </section>
 
-      {/* â”€â”€ CATEGORIES â”€â”€ */}
+      {/* ── CATEGORIES ── */}
       <section id="collections" className="py-20 px-4 md:px-8 relative overflow-hidden">
         <div className="max-w-[1440px] mx-auto">
           <div className="text-center mb-12">
@@ -356,7 +356,7 @@ export default function Landing() {
               className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-4"
               style={{ background: '#E3F5FE', color: '#2E9BD6' }}
             >
-              ðŸ§¸ WHAT WE OFFER
+              🧸 WHAT WE OFFER
             </div>
             <h2
               className="text-4xl md:text-5xl"
@@ -407,7 +407,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* â”€â”€ HOW IT WORKS â”€â”€ */}
+      {/* ── HOW IT WORKS ── */}
       <section
         id="how"
         className="py-20 px-4 md:px-8 relative overflow-hidden"
@@ -503,7 +503,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* â”€â”€ FEATURED PRODUCTS â”€â”€ */}
+      {/* ── FEATURED PRODUCTS ── */}
       <section id="featured" className="py-20 px-4 md:px-8 relative overflow-hidden">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
@@ -512,7 +512,7 @@ export default function Landing() {
                 className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-3"
                 style={{ background: '#EDE8FF', color: '#7B61C4' }}
               >
-                ðŸ’œ FEATURED PIECES
+                💜 FEATURED PIECES
               </div>
               <h2
                 className="text-4xl"
@@ -527,7 +527,7 @@ export default function Landing() {
               className="text-sm font-bold flex items-center gap-1 whitespace-nowrap transition-opacity hover:opacity-70"
               style={{ color: '#2E9BD6' }}
             >
-              See full catalogue â†’
+              See full catalogue →
             </Link>
           </div>
 
@@ -552,16 +552,16 @@ export default function Landing() {
                   className="inline-flex text-xs font-bold px-3 py-1.5 rounded-full mb-3 w-fit"
                   style={{ background: '#92DBFD', color: '#0E4E6E' }}
                 >
-                  ðŸ†• New Arrival
+                  🆕 New Arrival
                 </span>
                 <h3
                   className="text-3xl font-bold text-white mb-2"
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
-                  Essential Romper Set ðŸ§¸
+                  Essential Romper Set 🧸
                 </h3>
                 <p className="text-sm text-white/80 mb-4 max-w-xs">
-                  3-piece organic cotton gift set. 8 colourways, NBâ€“24M.
+                  3-piece organic cotton gift set. 8 colourways, NB–24M.
                 </p>
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="text-white font-bold">From $4.80 / unit</span>
@@ -579,14 +579,14 @@ export default function Landing() {
             <div className="flex flex-col gap-5">
               {[
                 {
-                  title: 'Cloud Sleepwear â˜ï¸',
+                  title: 'Cloud Sleepwear ☁️',
                   price: '$3.20 / unit',
                   moq: 'MOQ 36',
                   img: 'https://images.unsplash.com/photo-1701272850369-2e2a4b3fca7e?w=600&h=440&fit=crop&auto=format',
                   bg: '#E8F0FF',
                 },
                 {
-                  title: 'Linen Summer Set ðŸŒž',
+                  title: 'Linen Summer Set 🌞',
                   price: '$5.50 / unit',
                   moq: 'MOQ 24',
                   img: 'https://images.unsplash.com/photo-1605644235751-709c7254e3e3?w=600&h=440&fit=crop&auto=format',
@@ -626,7 +626,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* â”€â”€ PERKS â”€â”€ */}
+      {/* ── PERKS ── */}
       <section
         id="perks"
         className="py-20 px-4 md:px-8 relative overflow-hidden"
@@ -639,7 +639,7 @@ export default function Landing() {
               className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-4"
               style={{ background: 'rgba(146,219,253,0.15)', color: '#2E9BD6' }}
             >
-              ðŸ’ WHY TINYTHREADS
+              💝 WHY TINYTHREADS
             </div>
             <h2
               className="text-4xl md:text-5xl"
@@ -684,7 +684,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* â”€â”€ TESTIMONIALS â”€â”€ */}
+      {/* ── TESTIMONIALS ── */}
       <section id="stories" className="py-20 px-4 md:px-8 relative overflow-hidden" style={{ background: '#FFFFFF' }}>
         <div className="max-w-[1440px] mx-auto">
           <div className="text-center mb-12">
@@ -692,7 +692,7 @@ export default function Landing() {
               className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-4"
               style={{ background: '#FFF5E0', color: '#E0960A' }}
             >
-              ðŸ’› PARTNER STORIES
+              💛 PARTNER STORIES
             </div>
             <h2
               className="text-4xl md:text-5xl"
@@ -718,7 +718,7 @@ export default function Landing() {
                   >
                     {t.avatar}
                   </div>
-                  <div className="text-sm tracking-wide" style={{ color: '#F5C542' }}>â˜…â˜…â˜…â˜…â˜…</div>
+                  <div className="text-sm tracking-wide" style={{ color: '#F5C542' }}>★★★★★</div>
                 </div>
                 <p
                   className="text-base leading-relaxed mb-5 font-medium"
@@ -730,7 +730,7 @@ export default function Landing() {
                   <div className="text-sm font-bold" style={{ color: '#3D3540' }}>{t.name}</div>
                   <div className="text-xs mt-0.5 font-medium" style={{ color: '#9B8FA0' }}>{t.role}</div>
                 </div>
-                <div className="absolute top-4 right-5 text-3xl select-none" style={{ color: deep, opacity: 0.25 }}>â</div>
+                <div className="absolute top-4 right-5 text-3xl select-none" style={{ color: deep, opacity: 0.25 }}>❝</div>
               </div>
               )
             })}
@@ -738,7 +738,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* â”€â”€ PRICING â”€â”€ */}
+      {/* ── PRICING ── */}
       <section id="pricing" className="py-20 px-4 md:px-8 relative overflow-hidden" style={{ background: '#F5F0FF' }}>
         {/* corner accents */}
 
@@ -747,7 +747,7 @@ export default function Landing() {
             className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full mb-4"
             style={{ background: '#E4DAF7', color: '#6C4FBF' }}
           >
-            ðŸ’œ CLEAR PRICING
+            💜 CLEAR PRICING
           </div>
           <h2
             className="text-4xl md:text-5xl mb-3"
@@ -761,9 +761,9 @@ export default function Landing() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-[1000px] mx-auto">
             {[
-              { tier: 'Starter', emoji: 'ðŸŒ±', units: '24â€“119 units', price: 'List price', note: 'Perfect for first orders', tile: '#E3F6EC', deep: '#3E9A6C', popular: false },
-              { tier: 'Boutique', emoji: 'â­', units: '120â€“499 units', price: '12% off', note: 'Best for growing shops', tile: '#DFF0FC', deep: '#2E8FC4', popular: true },
-              { tier: 'Partner', emoji: 'ðŸ†', units: '500+ units', price: '22% off', note: 'For volume champions', tile: '#FFF0D6', deep: '#C7862B', popular: false },
+              { tier: 'Starter', emoji: '🌱', units: '24–119 units', price: 'List price', note: 'Perfect for first orders', tile: '#E3F6EC', deep: '#3E9A6C', popular: false },
+              { tier: 'Boutique', emoji: '⭐', units: '120–499 units', price: '12% off', note: 'Best for growing shops', tile: '#DFF0FC', deep: '#2E8FC4', popular: true },
+              { tier: 'Partner', emoji: '🏆', units: '500+ units', price: '22% off', note: 'For volume champions', tile: '#FFF0D6', deep: '#C7862B', popular: false },
             ].map((p) => (
               <div
                 key={p.tier}
@@ -780,7 +780,7 @@ export default function Landing() {
                     className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-4 py-1.5 text-xs font-bold text-white"
                     style={{ background: '#3FA9DD', boxShadow: '0 6px 16px rgba(63,169,221,0.4)' }}
                   >
-                    ðŸ”¥ Most Popular
+                    🔥 Most Popular
                   </span>
                 )}
                 <div
@@ -810,7 +810,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* â”€â”€ CTA / APPLY â€” newsletter banner â”€â”€ */}
+      {/* ── CTA / APPLY — newsletter banner ── */}
       <section id="apply" className="py-20 px-4 md:px-8" style={{ background: '#FFFFFF' }}>
         <div
           className="max-w-[1440px] mx-auto relative overflow-hidden rounded-[2.5rem]"
@@ -861,10 +861,10 @@ export default function Landing() {
                   className="inline-flex items-center gap-3 px-8 py-5 rounded-2xl"
                   style={{ background: '#F3FAFF', border: '2px solid #E3F5FE' }}
                 >
-                  <span className="text-3xl">ðŸŽ‰</span>
+                  <span className="text-3xl">🎉</span>
                   <div className="text-left">
                     <div className="text-sm font-bold" style={{ color: '#3D3540' }}>You&apos;re on the list!</div>
-                    <div className="text-xs font-medium" style={{ color: '#9B8FA0' }}>We&apos;ll be in touch within 1 business day ðŸ’Œ</div>
+                    <div className="text-xs font-medium" style={{ color: '#9B8FA0' }}>We&apos;ll be in touch within 1 business day 💌</div>
                   </div>
                 </div>
               ) : (
@@ -889,7 +889,7 @@ export default function Landing() {
                     onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#5FC4F2')}
                     onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = '#92DBFD')}
                   >
-                    Subscribe â†’
+                    Subscribe →
                   </button>
                 </form>
               )}
@@ -898,7 +898,7 @@ export default function Landing() {
         </div>
       </section>
 
-        {/* â”€â”€ FOOTER â€” pastel clouds (reference layout) â”€â”€ */}
+        {/* ── FOOTER — pastel clouds (reference layout) ── */}
       <footer className="relative overflow-hidden" style={{ background: "#FFFFFF url('/images/figma/footer-clouds.png') bottom center / 100% auto no-repeat" }}>
         {/* right-edge doodles */}
         <svg className="absolute pointer-events-none" style={{ top: 30, right: 24 }} width="26" height="24" viewBox="0 0 24 22" aria-hidden="true">
@@ -924,7 +924,7 @@ export default function Landing() {
                   className="w-9 h-9 rounded-full flex items-center justify-center text-lg"
                   style={{ background: '#92DBFD' }}
                 >
-                  ðŸ¼
+                  🍼
                 </div>
                 <span style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 800, color: '#123F58' }}>
                   Tiny<span style={{ color: '#2E9BD6' }}>Threads</span>
@@ -942,7 +942,7 @@ export default function Landing() {
                     key={s}
                     className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold cursor-default"
                     style={{ background: '#3D3540', color: '#fff' }}
-                    title="Social links â€” add yours"
+                    title="Social links — add yours"
                   >
                     {s}
                   </span>
@@ -992,7 +992,7 @@ export default function Landing() {
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#E76A8D')}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = '#F27D9D')}
               >
-                Get Started â†’
+                Get Started →
               </a>
               <div className="text-sm font-bold mt-7 mb-3" style={{ fontFamily: 'var(--font-display)', color: '#123F58' }}>
                 Payment Methods
@@ -1015,7 +1015,7 @@ export default function Landing() {
         {/* bottom bar over the clouds */}
         <div className="absolute bottom-3 left-0 right-0 z-10">
           <div className="max-w-[1440px] mx-auto px-4 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold" style={{ color: '#3E6480' }}>
-            <span>Â© {new Date().getFullYear()} TinyThreads. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} TinyThreads. All rights reserved.</span>
             <span className="flex items-center gap-3">
               <a href="#how" className="transition-colors" onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#F27D9D')} onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#3E6480')}>Privacy Policy</a>
               <span>|</span>
