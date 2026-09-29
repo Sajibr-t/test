@@ -1,3 +1,10 @@
+/**
+ * Lightweight tab switcher used for the "Best Sellers / New In" panels.
+ *
+ * Takes its labels as a prop and its panels as children, showing one child at
+ * a time - so panels can be server-rendered content passed in from a page,
+ * while only the switching itself runs on the client.
+ */
 'use client'
 
 import { Children, useState } from 'react'

@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone Node scripts — they are CommonJS and never bundled into the
+    // app, so the browser/React rules in the Next config don't apply to them.
+    "prisma/seeds/**",
+    "scripts/**",
   ]),
 ]);
 

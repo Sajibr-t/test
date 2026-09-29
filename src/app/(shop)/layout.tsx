@@ -1,6 +1,6 @@
 import Link from "next/link";
-import KyteFooter from "@/components/KyteFooter";
-import { FeatureIcon } from "@/components/FeatureIcon";
+import KyteFooter from "@/components/layout/KyteFooter";
+import { FeatureIcon } from "@/components/ui/FeatureIcon";
 import { getUser } from "@/lib/session";
 import { readCart } from "@/lib/cart";
 import { logout } from "@/app/actions/auth";

@@ -1,4 +1,17 @@
-// Visual helpers for product cards.
+/**
+ * Visual helpers for product cards and category tiles.
+ *
+ * Products have no image column in the database yet, so artwork is resolved
+ * here in three fallback steps:
+ *   1. productImage(styleCode)  — an exact photo for a known style
+ *   2. categoryImage(category)  — a generic photo for that category
+ *   3. categoryEmoji(category)  — an emoji on a pastel tile, so a card is
+ *                                 never blank for a product we have no art for
+ *
+ * To use real photography: drop files into /public/images and map the style
+ * codes below. When products eventually get an `imageUrl` column, this file is
+ * the only place that needs to change.
+ */
 
 // Stock photos (Unsplash) mapped per seeded style; replace with real
 // product photography by dropping files into /public/images.

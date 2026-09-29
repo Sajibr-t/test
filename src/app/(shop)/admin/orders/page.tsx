@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/session";
 import { money, formatDate } from "@/lib/format";
 import { setOrderStatus, markInvoicePaid } from "@/app/actions/admin";
-import { StatusBadge } from "@/components/StatusBadge";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 export default async function AdminOrdersPage() {
   await requireAdmin();

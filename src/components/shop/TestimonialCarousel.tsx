@@ -1,3 +1,10 @@
+/**
+ * Retailer testimonials carousel on the shop page.
+ *
+ * Client component: tracks the active quote, auto-advances on a timer, and
+ * pauses while the visitor is interacting so it never yanks a quote away
+ * mid-read.
+ */
 'use client'
 
 import { useEffect, useRef, useState } from 'react'

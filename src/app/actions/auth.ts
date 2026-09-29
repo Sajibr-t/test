@@ -1,3 +1,14 @@
+/**
+ * Authentication server actions: register, login, logout.
+ *
+ * Registration always creates a PENDING buyer — new accounts can sign in but
+ * see the "awaiting approval" page until an admin approves them, which is what
+ * keeps trade pricing away from the general public.
+ *
+ * Passwords are hashed with bcrypt and never stored or logged in plain text.
+ * On failure these actions redirect back with an `?error=` flag rather than
+ * throwing, so the form can show a friendly message.
+ */
 "use server";
 
 import { redirect } from "next/navigation";

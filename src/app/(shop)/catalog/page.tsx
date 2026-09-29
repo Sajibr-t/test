@@ -9,10 +9,10 @@ import {
   categoryTileBg,
   bulkDiscountPct,
 } from "@/lib/display";
-import OffersSlider, { type OfferSlide } from "@/components/OffersSlider";
-import Tabs from "@/components/Tabs";
-import { FeatureIcon, GarmentIcon } from "@/components/FeatureIcon";
-import TestimonialCarousel from "@/components/TestimonialCarousel";
+import OffersSlider, { type OfferSlide } from "@/components/shop/OffersSlider";
+import Tabs from "@/components/shop/Tabs";
+import { FeatureIcon, GarmentIcon } from "@/components/ui/FeatureIcon";
+import TestimonialCarousel from "@/components/shop/TestimonialCarousel";
 
 type ProductWithExtras = Awaited<ReturnType<typeof getProducts>>[number];
 

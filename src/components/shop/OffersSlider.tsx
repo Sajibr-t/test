@@ -1,3 +1,10 @@
+/**
+ * Auto-advancing promo carousel at the top of the shop page.
+ *
+ * Slides are built from real discounted products by the catalogue page and
+ * passed in, so the banner always advertises offers that actually exist.
+ * Client component: it owns the rotation timer and the active-slide state.
+ */
 'use client'
 
 import { useEffect, useState } from 'react'

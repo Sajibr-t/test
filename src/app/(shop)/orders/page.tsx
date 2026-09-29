@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireApprovedBuyer } from "@/lib/session";
 import { money, formatDate } from "@/lib/format";
-import { StatusBadge } from "@/components/StatusBadge";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 export default async function OrdersPage() {
   const user = await requireApprovedBuyer();

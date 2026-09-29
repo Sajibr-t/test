@@ -1,3 +1,11 @@
+/**
+ * Coloured pill for order, invoice and buyer statuses.
+ *
+ * One component for all three so a status always looks the same wherever it
+ * appears. Colours carry meaning: amber = waiting on someone, blue = in
+ * progress, green = done, red = rejected, grey = cancelled or unknown.
+ * An unrecognised status still renders, in neutral grey.
+ */
 const styles: Record<string, string> = {
   PENDING: "bg-amber-50 text-amber-700",
   CONFIRMED: "bg-blue-50 text-blue-700",

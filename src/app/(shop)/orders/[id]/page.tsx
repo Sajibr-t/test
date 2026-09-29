@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireApprovedBuyer } from "@/lib/session";
 import { money, formatDate } from "@/lib/format";
-import { StatusBadge } from "@/components/StatusBadge";
-import { PrintButton } from "@/components/PrintButton";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PrintButton } from "@/components/ui/PrintButton";
 
 export default async function OrderPage({
   params,

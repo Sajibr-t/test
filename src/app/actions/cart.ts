@@ -1,3 +1,13 @@
+/**
+ * Cart and checkout server actions.
+ *
+ * These run on the server and are wired directly to <form action={...}> in the
+ * pages, so the cart works without any client-side JavaScript.
+ *
+ * Every action re-checks `requireApprovedBuyer()` itself. Hiding a button in
+ * the UI is not security — a server action is a real HTTP endpoint that anyone
+ * can post to, so each one must authorise independently.
+ */
 "use server";
 
 import { redirect } from "next/navigation";
@@ -47,6 +57,20 @@ export async function clearCart() {
   redirect("/cart");
 }
 
+/**
+ * Turn the cart into a confirmed order plus its Net 30 invoice.
+ *
+ * There is no card payment: placing an order creates an invoice the buyer pays
+ * within 30 days, which is how wholesale trade accounts normally work.
+ *
+ * Prices are recalculated here from the database rather than taken from the
+ * page the buyer submitted, so the order is always written at true current
+ * prices even if the cart page was left open while an admin edited them.
+ *
+ * Line items store a snapshot (description, unitPrice, lineTotal) instead of
+ * only referencing the product. Invoices must stay accurate years later, so
+ * they must not change when a product is renamed or repriced.
+ */
 export async function placeOrder(formData: FormData) {
   const user = await requireApprovedBuyer();
   const notes = String(formData.get("notes") ?? "").trim() || null;
@@ -55,13 +79,20 @@ export async function placeOrder(formData: FormData) {
   if (cart.length === 0) redirect("/cart");
   const priced = await priceCart(cart);
   if (priced.lines.length === 0) redirect("/cart");
+  // Re-check MOQs server-side: the cart page disables the button, but a buyer
+  // could still post this form directly.
   if (priced.moqIssues.length > 0) redirect("/cart?error=moq");
 
+  // Sequential, human-friendly references: PO-1001, INV-1001, ...
+  // Note: counting rows is fine at this scale but two orders placed at the very
+  // same moment could collide — swap to a database sequence before high volume.
   const orderCount = await prisma.order.count();
   const invoiceCount = await prisma.invoice.count();
   const dueDate = new Date();
-  dueDate.setDate(dueDate.getDate() + 30);
+  dueDate.setDate(dueDate.getDate() + 30); // Net 30
 
+  // Order, its line items and the invoice are created in one nested write, so
+  // an order can never end up saved without its invoice.
   const order = await prisma.order.create({
     data: {
       orderNumber: `PO-${1001 + orderCount}`,

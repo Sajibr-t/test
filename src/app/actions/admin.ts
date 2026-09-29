@@ -1,3 +1,15 @@
+/**
+ * Admin server actions: approving buyers, managing the catalogue, and
+ * progressing orders and invoices.
+ *
+ * Every action starts with `requireAdmin()` — these are public HTTP endpoints,
+ * so the check has to live here rather than relying on the admin UI being
+ * hidden from other users.
+ *
+ * Prices arrive as text from form inputs and are converted to integer cents by
+ * `parseMoney()`; a null result means the input was invalid and we redirect
+ * back instead of writing a bad price.
+ */
 "use server";
 
 import { redirect } from "next/navigation";
