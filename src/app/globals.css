@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  /* TinyThreads palette (from the Figma Make export) */
+  --color-background: #ffffff;
+  --color-foreground: #3d3540;
+  --color-brand: #3fa9dd;
+  --color-brand-dark: #2e8fc4;
+  --color-brand-light: #92dbfd;
+  --color-ink: #3d3540;
+  --color-lavender: #f5f0ff;
+  --color-cream: #fff5e0;
+  --color-cream-dark: #ffe9c2;
+  --color-gold: #e0960a;
+  --color-coral: #92dbfd;
+  --color-mint: #b8e8d0;
+  --color-babypink: #e3f5fe;
+  --color-babyblue: #e8f0ff;
+  --color-sky: #c5e8ff;
+  --color-skydeep: #a0b4ff;
+  --color-sand: #fff5e0;
+  --color-border: #e3f5fe;
+
+  /* One typeface everywhere: the rounded Baloo 2 */
+  --font-sans: var(--font-baloo-2);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-baloo-2);
+  --font-baloo: var(--font-baloo-2);
+}
+
+/* The landing component references these directly via inline styles */
+:root {
+  --font-display: var(--font-baloo-2), system-ui, sans-serif;
+  --font-body: var(--font-baloo-2), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #ffffff;
+  color: #3d3540;
+  font-family: var(--font-baloo-2), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* full-bleed sections use w-screen; clip any sub-pixel overflow */
+  overflow-x: clip;
+}
+
+/* Photo fade for the newsletter banner: right-fade on desktop, bottom-fade stacked on mobile */
+.mask-fade-r {
+  -webkit-mask-image: linear-gradient(to right, black 55%, transparent 100%);
+  mask-image: linear-gradient(to right, black 55%, transparent 100%);
+}
+
+@media (max-width: 767px) {
+  .mask-fade-r {
+    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+}

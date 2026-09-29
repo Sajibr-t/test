@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Roles: "ADMIN" | "BUYER"
+// Buyer status: "PENDING" | "APPROVED" | "REJECTED"
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         String   @default("BUYER")
+  status       String   @default("PENDING")
+  businessName String
+  contactName  String
+  phone        String?
+  address      String?
+  taxId        String?
+  createdAt    DateTime @default(now())
+  orders       Order[]
+}
+
+model Product {
+  id          String       @id @default(cuid())
+  styleCode   String       @unique
+  name        String
+  description String?
+  category    String
+  fabric      String?
+  basePrice   Int // wholesale unit price in cents
+  moq         Int          @default(1) // minimum order quantity in units
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  variants    Variant[]
+  priceBreaks PriceBreak[]
+  packs       Pack[]
+  orderItems  OrderItem[]
+}
+
+model Variant {
+  id         String      @id @default(cuid())
+  productId  String
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color      String
+  size       String
+  sku        String      @unique
+  stock      Int         @default(0)
+  orderItems OrderItem[]
+
+  @@unique([productId, color, size])
+}
+
+// Prepack: fixed size ratio sold as one unit, e.g. 1S-2M-2L-1XL
+model Pack {
+  id         String      @id @default(cuid())
+  productId  String
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String // e.g. "Standard prepack"
+  contents   String // JSON: {"S":1,"M":2,"L":2,"XL":1}
+  orderItems OrderItem[]
+}
+
+// Quantity break: at minQty units and above, this unit price applies
+model PriceBreak {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  minQty    Int
+  unitPrice Int // cents
+
+  @@unique([productId, minQty])
+}
+
+// Order status: "PENDING" | "CONFIRMED" | "SHIPPED" | "CANCELLED"
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  status      String      @default("PENDING")
+  subtotal    Int // cents
+  notes       String?
+  createdAt   DateTime    @default(now())
+  items       OrderItem[]
+  invoice     Invoice?
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  variantId   String?
+  variant     Variant? @relation(fields: [variantId], references: [id])
+  packId      String?
+  pack        Pack?    @relation(fields: [packId], references: [id])
+  description String // snapshot, e.g. "Classic Tee — Black / Prepack x3"
+  quantity    Int // total units
+  unitPrice   Int // cents, price applied after quantity breaks
+  lineTotal   Int // cents
+}
+
+// Invoice status: "UNPAID" | "PAID"
+model Invoice {
+  id            String    @id @default(cuid())
+  invoiceNumber String    @unique
+  orderId       String    @unique
+  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status        String    @default("UNPAID")
+  terms         String    @default("Net 30")
+  issuedAt      DateTime  @default(now())
+  dueDate       DateTime
+  paidAt        DateTime?
+}
