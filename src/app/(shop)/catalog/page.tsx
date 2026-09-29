@@ -24,63 +24,107 @@ function getProducts(where: object, orderBy: object = { name: "asc" }) {
   });
 }
 
-/* Serif heading with side rules, like the reference */
+/* Playful section heading: pastel dots either side and a hand-drawn squiggle under it */
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-8 flex items-center justify-center gap-3">
-      <span className="h-2.5 w-2.5 rounded-full bg-[#F48FB1]" />
-      <span className="h-1.5 w-1.5 rounded-full bg-[#F5C542]" />
-      <h2 className="whitespace-nowrap font-baloo text-2xl font-extrabold text-ink md:text-3xl">
-        {children}
-      </h2>
-      <span className="h-1.5 w-1.5 rounded-full bg-[#F5C542]" />
-      <span className="h-2.5 w-2.5 rounded-full bg-[#92DBFD]" />
+    <div className="mb-8 flex flex-col items-center">
+      <div className="flex items-center justify-center gap-3">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#F48FB1]" />
+        <span className="h-1.5 w-1.5 rounded-full bg-[#F5C542]" />
+        <h2 className="whitespace-nowrap font-baloo text-2xl font-extrabold text-ink md:text-3xl">
+          {children}
+        </h2>
+        <span className="h-1.5 w-1.5 rounded-full bg-[#F5C542]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#92DBFD]" />
+      </div>
+      {/* wobbly underline, like a crayon stroke */}
+      <svg
+        className="mt-1.5"
+        width="104"
+        height="9"
+        viewBox="0 0 104 9"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 6 Q 16 2 29 6 T 55 6 T 81 6 T 101 5"
+          stroke="#92DBFD"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+      </svg>
     </div>
   );
 }
 
-/* Kyte-style card: photo on warm off-white, plain type, "Select a Pack +" quick bar */
+/**
+ * Product card.
+ *
+ * Deliberately soft and toy-like: the photo sits inset in a rounded pastel
+ * frame (tint follows the category), the whole card lifts and tilts a touch on
+ * hover, and bulk savings appear as a tilted sticker rather than a hard badge.
+ */
 function ProductCard({ p }: { p: ProductWithExtras }) {
   const low = lowestPrice(p.basePrice, p.priceBreaks);
   const img = productImage(p.styleCode);
+  const pct = bulkDiscountPct(p.basePrice, p.priceBreaks);
   return (
     <Link
       href={`/catalog/${p.id}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-stone-200/80 bg-white transition hover:shadow-md"
+      className="group relative flex flex-col rounded-[1.75rem] border-2 border-transparent bg-white p-2.5 shadow-[0_2px_12px_rgba(146,219,253,0.18)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#92DBFD] hover:shadow-[0_14px_30px_rgba(146,219,253,0.45)]"
     >
-      <div className="h-72 overflow-hidden bg-[#E7F2FB]">
+      {/* photo in a rounded pastel frame */}
+      <div
+        className="relative h-60 overflow-hidden rounded-[1.4rem]"
+        style={{ backgroundColor: categoryTileBg(p.category) }}
+      >
         {img ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={img}
             alt={p.name}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.06]"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-5xl">
+          <div className="flex h-full items-center justify-center text-6xl transition duration-500 group-hover:scale-110">
             {categoryEmoji(p.category)}
           </div>
         )}
+
+        {/* bulk-saving sticker, tilted like it was stuck on by hand */}
+        {pct > 0 && (
+          <span className="absolute left-2.5 top-2.5 -rotate-6 rounded-full bg-[#F27D9D] px-2.5 py-1 text-[10px] font-extrabold text-white shadow-sm">
+            save {pct}% ✨
+          </span>
+        )}
+
+        {/* wishlist heart — fills in on hover */}
+        <span className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-stone-300 shadow-sm transition group-hover:scale-110 group-hover:text-[#F27D9D]">
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+            <path d="M12 20 C5 15 3 10.5 5.5 7.5 C7.7 5 11 5.6 12 8 C13 5.6 16.3 5 18.5 7.5 C21 10.5 19 15 12 20 Z" />
+          </svg>
+        </span>
       </div>
-      <div className="flex-1 p-4">
-        <div className="text-[15px] font-bold leading-snug text-ink">
+
+      <div className="flex-1 px-2 pt-3">
+        <div className="font-baloo text-[16px] font-bold leading-snug text-ink">
           {p.name}
         </div>
-        <div className="mt-0.5 text-[11px] uppercase tracking-wide text-stone-400">
+        <div className="mt-0.5 text-[11px] font-semibold text-stone-400">
           {p.category} · {p.styleCode}
         </div>
-        <div className="mt-2 text-sm font-semibold text-ink">
+        <div className="mt-1.5 text-sm font-bold text-ink">
           From {money(low)}{" "}
-          <span className="font-normal text-stone-400">
+          <span className="font-medium text-stone-400">
             /unit · MOQ {p.moq}
           </span>
         </div>
       </div>
-      <div className="flex items-center justify-between border-t border-stone-200/80 px-4 py-3 text-sm font-bold text-ink">
+
+      {/* rounded pill call-to-action that colours in on hover */}
+      <div className="mt-3 flex items-center justify-center gap-1.5 rounded-full bg-[#F3F9FE] py-2.5 text-sm font-bold text-ink transition group-hover:bg-[#92DBFD] group-hover:text-[#0E4E6E]">
         Select a Pack
-        <span className="text-lg leading-none" aria-hidden>
-          +
-        </span>
+        <span aria-hidden>🧺</span>
       </div>
     </Link>
   );
@@ -88,10 +132,28 @@ function ProductCard({ p }: { p: ProductWithExtras }) {
 
 function Grid({ items }: { items: ProductWithExtras[] }) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
       {items.map((p) => (
         <ProductCard key={p.id} p={p} />
       ))}
+    </div>
+  );
+}
+
+/** Friendly placeholder so a filter with no matches never feels like an error. */
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="flex flex-col items-center rounded-[1.75rem] bg-[#F3F9FE] px-6 py-14 text-center">
+      <span className="text-5xl" aria-hidden>
+        🧸
+      </span>
+      <p className="mt-3 font-baloo text-lg font-bold text-ink">{message}</p>
+      <Link
+        href="/catalog"
+        className="mt-4 rounded-full bg-[#92DBFD] px-5 py-2.5 text-sm font-bold text-[#0E4E6E] transition hover:brightness-95"
+      >
+        Browse everything
+      </Link>
     </div>
   );
 }
@@ -118,13 +180,7 @@ function ListView({
       {items.length > 0 ? (
         <Grid items={items} />
       ) : (
-        <p className="py-10 text-stone-500">
-          Nothing here yet —{" "}
-          <Link href="/catalog" className="font-bold text-brand underline">
-            browse everything
-          </Link>
-          .
-        </p>
+        <EmptyState message="Nothing here just yet!" />
       )}
     </div>
   );
@@ -218,7 +274,7 @@ export default async function CatalogPage({
         {items.length > 0 ? (
           <Grid items={items} />
         ) : (
-          <p className="py-10 text-stone-500">No styles in this category yet.</p>
+          <EmptyState message="No styles in this category yet!" />
         )}
       </div>
     );
@@ -302,21 +358,33 @@ export default async function CatalogPage({
             <Link
               key={c}
               href={`/catalog?category=${encodeURIComponent(c)}`}
-              className="group overflow-hidden rounded-xl border border-stone-200/80 bg-white transition hover:shadow-md"
+              className="group relative rounded-[2rem] border-2 border-transparent bg-white p-3 shadow-[0_2px_12px_rgba(146,219,253,0.18)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#92DBFD] hover:shadow-[0_14px_30px_rgba(146,219,253,0.45)]"
             >
-              <div className="h-80 overflow-hidden bg-[#E7F2FB]">
+              <div
+                className="h-72 overflow-hidden rounded-[1.6rem]"
+                style={{ backgroundColor: categoryTileBg(c) }}
+              >
                 {img ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={img} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+                  <img src={img} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.06]" />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-6xl">{categoryEmoji(c)}</div>
+                  <div className="flex h-full items-center justify-center text-7xl transition duration-500 group-hover:scale-110">{categoryEmoji(c)}</div>
                 )}
               </div>
-              <div className="p-6">
-                <div className="text-2xl font-bold text-ink">{c}</div>
-                <div className="mt-3 flex items-center gap-3 text-stone-500">
+              <div className="px-3 pb-2 pt-4">
+                <div className="font-baloo text-2xl font-extrabold text-ink">
+                  {c}
+                </div>
+                <div className="mt-2 flex items-center gap-3 text-stone-500">
                   <GarmentIcon kind={garmentFor(c)} />
-                  <span className="text-sm">{trioCaption(c)}</span>
+                  <span className="text-sm font-medium">{trioCaption(c)}</span>
+                </div>
+                {/* little arrow that slides out on hover */}
+                <div className="mt-3 flex items-center gap-1 text-sm font-bold text-[#2E9BD6]">
+                  Shop now
+                  <span className="transition-transform duration-300 group-hover:translate-x-1">
+                    →
+                  </span>
                 </div>
               </div>
             </Link>
