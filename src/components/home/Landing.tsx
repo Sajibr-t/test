@@ -12,6 +12,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Reveal } from '@/components/ui/Reveal'
 import { useState } from 'react'
 
 const NAV_LINKS: [string, string][] = [
@@ -228,11 +229,11 @@ export default function Landing() {
         />
 
         {/* Floating decorative dots */}
-        <FloatingShape className="w-10 h-10 rounded-full opacity-40" style={{ background: '#92DBFD', top: 120, left: '8%' }} />
-        <FloatingShape className="w-6 h-6 rounded-full opacity-30" style={{ background: '#FFD6A5', top: 200, left: '15%' }} />
-        <FloatingShape className="w-14 h-14 rounded-full opacity-20" style={{ background: '#B8E8D0', top: 100, right: '12%' }} />
-        <FloatingShape className="w-8 h-8 rounded-full opacity-30" style={{ background: '#D4C5F0', top: 300, right: '6%' }} />
-        <FloatingShape className="w-4 h-4 rounded-full opacity-40" style={{ background: '#92DBFD', top: 180, right: '22%' }} />
+        <FloatingShape className="float-slow w-10 h-10 rounded-full opacity-40" style={{ background: '#92DBFD', top: 120, left: '8%' }} />
+        <FloatingShape className="float-slower w-6 h-6 rounded-full opacity-30" style={{ background: '#FFD6A5', top: 200, left: '15%' }} />
+        <FloatingShape className="float-slow w-14 h-14 rounded-full opacity-20" style={{ background: '#B8E8D0', top: 100, right: '12%' }} />
+        <FloatingShape className="float-slower w-8 h-8 rounded-full opacity-30" style={{ background: '#D4C5F0', top: 300, right: '6%' }} />
+        <FloatingShape className="float-slow w-4 h-4 rounded-full opacity-40" style={{ background: '#92DBFD', top: 180, right: '22%' }} />
 
         <div className="relative max-w-[1440px] mx-auto px-4 md:px-8 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center lg:min-h-[80vh]">
           {/* Text */}
@@ -349,6 +350,7 @@ export default function Landing() {
         </section>
 
       {/* ── CATEGORIES ── */}
+      <Reveal variant="rise">
       <section id="collections" className="py-20 px-4 md:px-8 relative overflow-hidden">
         <div className="max-w-[1440px] mx-auto">
           <div className="text-center mb-12">
@@ -406,8 +408,10 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── HOW IT WORKS ── */}
+      <Reveal variant="left">
       <section
         id="how"
         className="py-20 px-4 md:px-8 relative overflow-hidden"
@@ -502,8 +506,10 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── FEATURED PRODUCTS ── */}
+      <Reveal variant="rise">
       <section id="featured" className="py-20 px-4 md:px-8 relative overflow-hidden">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
@@ -564,7 +570,7 @@ export default function Landing() {
                   3-piece organic cotton gift set. 8 colourways, NB–24M.
                 </p>
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-white font-bold">From $4.80 / unit</span>
+                  <span className="text-white font-bold">From RM 4.80 / unit</span>
                   <span
                     className="text-xs px-3 py-1 rounded-full font-bold"
                     style={{ background: 'rgba(255,255,255,0.2)', color: '#fff' }}
@@ -580,14 +586,14 @@ export default function Landing() {
               {[
                 {
                   title: 'Cloud Sleepwear ☁️',
-                  price: '$3.20 / unit',
+                  price: 'RM 3.20 / unit',
                   moq: 'MOQ 36',
                   img: 'https://images.unsplash.com/photo-1701272850369-2e2a4b3fca7e?w=600&h=440&fit=crop&auto=format',
                   bg: '#E8F0FF',
                 },
                 {
                   title: 'Linen Summer Set 🌞',
-                  price: '$5.50 / unit',
+                  price: 'RM 5.50 / unit',
                   moq: 'MOQ 24',
                   img: 'https://images.unsplash.com/photo-1605644235751-709c7254e3e3?w=600&h=440&fit=crop&auto=format',
                   bg: '#FFF5E0',
@@ -625,8 +631,10 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── PERKS ── */}
+      <Reveal variant="tilt">
       <section
         id="perks"
         className="py-20 px-4 md:px-8 relative overflow-hidden"
@@ -683,8 +691,10 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── TESTIMONIALS ── */}
+      <Reveal variant="rise">
       <section id="stories" className="py-20 px-4 md:px-8 relative overflow-hidden" style={{ background: '#FFFFFF' }}>
         <div className="max-w-[1440px] mx-auto">
           <div className="text-center mb-12">
@@ -737,8 +747,10 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── PRICING ── */}
+      <Reveal variant="zoom">
       <section id="pricing" className="py-20 px-4 md:px-8 relative overflow-hidden" style={{ background: '#F5F0FF' }}>
         {/* corner accents */}
 
@@ -809,8 +821,10 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ── CTA / APPLY — newsletter banner ── */}
+      <Reveal variant="rise">
       <section id="apply" className="py-20 px-4 md:px-8" style={{ background: '#FFFFFF' }}>
         <div
           className="max-w-[1440px] mx-auto relative overflow-hidden rounded-[2.5rem]"
@@ -897,6 +911,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      </Reveal>
 
         {/* ── FOOTER — pastel clouds (reference layout) ── */}
       <footer className="relative overflow-hidden" style={{ background: "#FFFFFF url('/images/figma/footer-clouds.png') bottom center / 100% auto no-repeat" }}>

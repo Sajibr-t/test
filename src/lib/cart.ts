@@ -13,6 +13,13 @@
 import { cookies } from "next/headers";
 import { prisma } from "./db";
 import { unitPriceFor, packUnits, packLabel } from "./pricing";
+import {
+  t,
+  colour as colourName,
+  packName,
+  productCopy,
+  type Lang,
+} from "./i18n";
 
 /**
  * One cart line. A line is EITHER a prepack (`packId` set) OR loose units of a
@@ -89,8 +96,15 @@ export type PricedCart = {
  *
  * Also returns any products that fall under their MOQ so the cart page can
  * explain exactly how many more units are needed.
+ *
+ * `lang` decides the language of the generated line descriptions. When an order
+ * is placed these descriptions are copied into the order as a snapshot, so the
+ * invoice ends up in whichever language the buyer was shopping in.
  */
-export async function priceCart(items: CartItem[]): Promise<PricedCart> {
+export async function priceCart(
+  items: CartItem[],
+  lang: Lang = "en"
+): Promise<PricedCart> {
   // One query for every product in the cart, rather than one per line.
   const productIds = [...new Set(items.map((i) => i.productId))];
   const products = await prisma.product.findMany({
@@ -136,13 +150,15 @@ export async function priceCart(items: CartItem[]): Promise<PricedCart> {
             (v) => v.color === item.color && v.size === item.size
           )
         : undefined;
+    const name = productCopy(lang, product).name;
+    const colourLabel = colourName(lang, item.color);
     const description = pack
-      ? `${product.name} — ${item.color} / ${pack.name} (${packLabel(pack.contents)}) × ${item.qty}`
-      : `${product.name} — ${item.color} / Size ${item.size} × ${item.qty}`;
+      ? `${name} — ${colourLabel} / ${packName(lang, pack.name)} (${packLabel(pack.contents)}) × ${item.qty}`
+      : `${name} — ${colourLabel} / ${t(lang, "product.sizeLabel")} ${item.size} × ${item.qty}`;
     lines.push({
       index,
       productId: product.id,
-      productName: product.name,
+      productName: name,
       variantId: variant?.id,
       packId: pack?.id,
       description,
@@ -156,7 +172,11 @@ export async function priceCart(items: CartItem[]): Promise<PricedCart> {
   const moqIssues = [...unitsByProduct.entries()]
     .map(([productId, units]) => {
       const product = byId.get(productId)!;
-      return { productName: product.name, moq: product.moq, units };
+      return {
+        productName: productCopy(lang, product).name,
+        moq: product.moq,
+        units,
+      };
     })
     .filter((x) => x.units < x.moq);
 

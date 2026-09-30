@@ -16,11 +16,21 @@ export type OfferSlide = {
   cta: string
   href: string
   img?: string | null
+  /** CSS object-position for the photo, e.g. "50% 25%" to favour the top of
+   *  the frame. Defaults to centred; set it when centring crops faces badly. */
+  imgPos?: string
   tint: string
 }
 
 /* Full-bleed photo hero (Kyte-style): text bottom-left, dash indicators */
-export default function OffersSlider({ slides }: { slides: OfferSlide[] }) {
+export default function OffersSlider({
+  slides,
+  eyebrow,
+}: {
+  slides: OfferSlide[]
+  /** Kicker above the headline, already translated by the calling page. */
+  eyebrow: string
+}) {
   const [i, setI] = useState(0)
   const [paused, setPaused] = useState(false)
 
@@ -54,11 +64,12 @@ export default function OffersSlider({ slides }: { slides: OfferSlide[] }) {
                   src={s.img}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
+                  style={{ objectPosition: s.imgPos ?? "50% 50%" }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                 <div className="absolute inset-0 mx-auto flex max-w-[1440px] flex-col items-start justify-end px-6 pb-16 md:px-8">
                   <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/80">
-                    Special offer
+                    {eyebrow}
                   </div>
                   <h3 className="mt-2 max-w-2xl text-4xl font-semibold leading-tight text-white md:text-5xl">
                     {s.title}
@@ -104,20 +115,25 @@ export default function OffersSlider({ slides }: { slides: OfferSlide[] }) {
 
       {slides.length > 1 && (
         <>
-          <button
-            aria-label="Previous offer"
-            onClick={() => go(-1)}
-            className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg font-bold text-ink shadow-sm transition hover:bg-white"
-          >
-            ‹
-          </button>
-          <button
-            aria-label="Next offer"
-            onClick={() => go(1)}
-            className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg font-bold text-ink shadow-sm transition hover:bg-white"
-          >
-            ›
-          </button>
+          {/* Arrows sit together in the bottom-right corner rather than
+              vertically centred on each edge — centred, they landed on top of
+              the headline whenever it wrapped to two lines. */}
+          <div className="absolute bottom-4 right-5 flex gap-2">
+            <button
+              aria-label="Previous offer"
+              onClick={() => go(-1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-lg font-bold text-ink shadow-sm transition hover:bg-white"
+            >
+              ‹
+            </button>
+            <button
+              aria-label="Next offer"
+              onClick={() => go(1)}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-lg font-bold text-ink shadow-sm transition hover:bg-white"
+            >
+              ›
+            </button>
+          </div>
           <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
             {slides.map((_, idx) => (
               <button

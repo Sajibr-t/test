@@ -4,22 +4,22 @@
   /* TinyThreads palette (from the Figma Make export) */
   --color-background: #ffffff;
   --color-foreground: #3d3540;
-  --color-brand: #3fa9dd;
-  --color-brand-dark: #2e8fc4;
-  --color-brand-light: #92dbfd;
+  --color-brand: #C08F3E;
+  --color-brand-dark: #a9762f;
+  --color-brand-light: #E0B064;
   --color-ink: #3d3540;
   --color-lavender: #f5f0ff;
   --color-cream: #fff5e0;
   --color-cream-dark: #ffe9c2;
   --color-gold: #e0960a;
-  --color-coral: #92dbfd;
+  --color-coral: #E0B064;
   --color-mint: #b8e8d0;
-  --color-babypink: #e3f5fe;
+  --color-babypink: #F4E9D8;
   --color-babyblue: #e8f0ff;
   --color-sky: #c5e8ff;
   --color-skydeep: #a0b4ff;
   --color-sand: #fff5e0;
-  --color-border: #e3f5fe;
+  --color-border: #F4E9D8;
 
   /* One typeface everywhere: the rounded Baloo 2 */
   --font-sans: var(--font-baloo-2);
@@ -60,8 +60,189 @@ body {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Backgrounds drawn from the garments themselves
+
+   Rather than generic decoration, textures here come from the language
+   of how baby clothes are actually made — woven checks and twills, and
+   scalloped picot hems. Everything is kept very low contrast so it
+   reads as texture, never as content.
+   ───────────────────────────────────────────────────────────── */
+
+/*
+ * Gingham — the classic baby-clothing check.
+ * Built the way real gingham is woven: two sets of translucent stripes
+ * crossing, so where they overlap the colour doubles and the darker
+ * squares appear on their own. Two scales layered gives it the slightly
+ * irregular feel of cloth rather than a flat grid.
+ */
+.pattern-gingham {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(186,146,96, 0.085) 0 13px,
+      transparent 13px 26px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(186,146,96, 0.085) 0 13px,
+      transparent 13px 26px
+    );
+}
+
+/* A softer, larger check for wide coloured bands */
+.pattern-gingham-lg {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.4) 0 22px,
+      transparent 22px 44px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.4) 0 22px,
+      transparent 22px 44px
+    );
+}
+
+/* Chambray weave — fine diagonal twill, for panels that want texture
+   without a check */
+.pattern-chambray {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(186,146,96, 0.07) 0 2px,
+    transparent 2px 6px
+  );
+}
+
+/* Keep real content above any decorative layer */
+.above-decor {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Scalloped cloud edge, used to end a coloured band softly instead of
+   with a hard horizontal line. */
+.cloud-edge {
+  display: block;
+  width: 100%;
+  height: 28px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Scroll motion
+   Elements start pushed back in Z and slightly tilted, then settle
+   flat as they scroll into view. The `is-shown` class is added by
+   <Reveal> (src/components/ui/Reveal.tsx) via IntersectionObserver.
+   ───────────────────────────────────────────────────────────── */
+
+.reveal {
+  opacity: 0;
+  /* Gentle overshoot-free easing: fast start, long soft landing. */
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.reveal.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+/* Rises from below, tipped back like a card being laid down flat */
+.reveal-rise {
+  transform: perspective(1200px) translate3d(0, 48px, -70px) rotateX(8deg);
+}
+
+/* Tips in from the lower-right corner — good for feature panels */
+.reveal-tilt {
+  transform: perspective(1200px) translate3d(0, 40px, -110px) rotateX(11deg)
+    rotateY(-5deg);
+}
+
+/* Comes forward out of the page */
+.reveal-zoom {
+  transform: perspective(1200px) scale(0.9) translateZ(-60px);
+}
+
+/* Swings in from the sides on the Y axis, like a door */
+.reveal-left {
+  transform: perspective(1200px) translate3d(-56px, 0, -60px) rotateY(10deg);
+}
+.reveal-right {
+  transform: perspective(1200px) translate3d(56px, 0, -60px) rotateY(-10deg);
+}
+
+/* Parallax layers are moved inline by <Parallax>; this just keeps the
+   compositor involved so the drift stays smooth. */
+.parallax {
+  will-change: transform;
+}
+
+/* 3D hover tilt for cards. Applied via the `tilt-card` class: the card
+   lifts toward the viewer and rotates a touch on the X axis. */
+.tilt-card {
+  transition:
+    transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+    border-color 0.3s ease;
+  transform-style: preserve-3d;
+}
+.tilt-card:hover {
+  transform: perspective(900px) translate3d(0, -8px, 26px) rotateX(4deg);
+}
+
+/* Slow float for decorative art (clouds, stars) */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+.float-slow {
+  animation: drift 7s ease-in-out infinite;
+}
+.float-slower {
+  animation: drift 10s ease-in-out infinite;
+}
+
+/* Anyone who asks for less motion gets the finished state, no movement. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal.is-shown {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .parallax {
+    transform: none !important;
+    will-change: auto;
+  }
+  .tilt-card:hover {
+    transform: none;
+  }
+  .float-slow,
+  .float-slower {
+    animation: none;
+  }
+}
+
 @media print {
   body {
     background: #ffffff;
+  }
+  /* Never hide content on paper because it hasn't scrolled into view. */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

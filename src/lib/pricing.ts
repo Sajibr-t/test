@@ -4,12 +4,13 @@
  * Two ideas drive every price in this store:
  *
  * 1. Quantity breaks — a product has a `basePrice` plus a list of breaks such as
- *    "48+ units => $5.95 each". The more a buyer orders, the lower the unit price.
+ *    "48+ units => RM 5.95 each". The more a buyer orders, the lower the unit price.
  * 2. Prepacks — a fixed size run sold as one unit, e.g. {"2-3Y":1,"4-5Y":2}.
  *    Buyers order whole packs; we still price per garment underneath.
  *
- * All money is stored and returned as INTEGER CENTS, never floats, so totals
- * can't drift from rounding. Use `money()` in lib/format.ts to display it.
+ * All money is stored and returned as INTEGER SEN (1/100 of a ringgit), never
+ * floats, so totals can't drift from rounding. Use `money()` in lib/format.ts
+ * to display it.
  */
 
 /** One quantity break: from `minQty` units upwards, each unit costs `unitPrice`. */
@@ -54,12 +55,15 @@ export function packUnits(contentsJson: string): number {
 }
 
 /**
- * Human-readable size run for a prepack, e.g. "1 2-3Y-2 4-5Y" => shown to
- * buyers as the pack breakdown on the product page.
+ * Human-readable size run for a prepack, e.g. "1×0-3M, 2×3-6M, 1×6-9M".
+ *
+ * The separators matter: baby sizes contain their own digits and hyphens
+ * ("0-3M", "1-2Y"), so joining with a bare hyphen produced unreadable labels
+ * like "10-3M-13-6M". The × and comma keep quantity and size distinct.
  */
 export function packLabel(contentsJson: string): string {
   const contents = JSON.parse(contentsJson) as Record<string, number>;
   return Object.entries(contents)
-    .map(([size, qty]) => `${qty}${size}`)
-    .join("-");
+    .map(([size, qty]) => `${qty}×${size}`)
+    .join(", ");
 }

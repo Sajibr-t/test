@@ -1,29 +1,33 @@
 import { register } from "@/app/actions/auth";
+import { t } from "@/lib/i18n";
+import { getLang } from "@/lib/i18n-server";
 
 export default async function RegisterPage({
   searchParams,
 }: PageProps<"/register">) {
   const params = await searchParams;
+  const lang = await getLang();
   return (
     <div className="mx-auto max-w-md">
-      <h1 className="font-display text-2xl font-bold text-brand">Apply for a trade account</h1>
+      <h1 className="font-display text-2xl font-bold text-brand">
+        {t(lang, "auth.registerTitle")}
+      </h1>
       <p className="mt-2 text-sm text-stone-500">
-        Wholesale pricing is only visible to approved businesses. We review
-        every application.
+        {t(lang, "auth.registerIntro")}
       </p>
       {params.error === "exists" && (
         <p className="mt-3 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
-          An account with that email already exists — try logging in.
+          {t(lang, "auth.emailTaken")}
         </p>
       )}
       {params.error === "invalid" && (
         <p className="mt-3 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
-          Please fill in all required fields (password at least 8 characters).
+          {t(lang, "auth.fillRequired")}
         </p>
       )}
       <form action={register} className="mt-6 space-y-4">
         <label className="block text-sm">
-          Business name *
+          {t(lang, "auth.businessName")} *
           <input
             name="businessName"
             required
@@ -31,7 +35,7 @@ export default async function RegisterPage({
           />
         </label>
         <label className="block text-sm">
-          Contact name *
+          {t(lang, "auth.contactName")} *
           <input
             name="contactName"
             required
@@ -39,7 +43,7 @@ export default async function RegisterPage({
           />
         </label>
         <label className="block text-sm">
-          Email *
+          {t(lang, "auth.email")} *
           <input
             name="email"
             type="email"
@@ -48,7 +52,8 @@ export default async function RegisterPage({
           />
         </label>
         <label className="block text-sm">
-          Password * <span className="text-stone-400">(min 8 characters)</span>
+          {t(lang, "auth.password")} *{" "}
+          <span className="text-stone-400">{t(lang, "auth.minChars")}</span>
           <input
             name="password"
             type="password"
@@ -58,14 +63,14 @@ export default async function RegisterPage({
           />
         </label>
         <label className="block text-sm">
-          Phone
+          {t(lang, "auth.phone")}
           <input
             name="phone"
             className="mt-1 w-full rounded border border-stone-300 px-3 py-2"
           />
         </label>
         <label className="block text-sm">
-          Business address
+          {t(lang, "auth.address")}
           <textarea
             name="address"
             rows={2}
@@ -73,14 +78,17 @@ export default async function RegisterPage({
           />
         </label>
         <label className="block text-sm">
-          Tax / business registration ID
+          {t(lang, "auth.taxId")}
           <input
             name="taxId"
             className="mt-1 w-full rounded border border-stone-300 px-3 py-2"
           />
         </label>
-        <button className="w-full rounded bg-brand py-2 font-medium text-white hover:bg-brand-light">
-          Submit application
+        <button
+          type="submit"
+          className="w-full rounded bg-brand py-2 font-medium text-white hover:bg-brand-light"
+        >
+          {t(lang, "auth.submitApplication")}
         </button>
       </form>
     </div>

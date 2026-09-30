@@ -97,7 +97,7 @@ export default function TestimonialCarousel({
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
-            <div className="flex min-h-0 flex-col bg-[#DCEBF8] p-8 md:p-10">
+            <div className="flex min-h-0 flex-col bg-[#EFE2CE] p-8 md:p-10">
               <div className="tracking-widest text-ink">★★★★★</div>
               <div className="mt-4 text-2xl font-semibold text-ink">
                 {t.title}

@@ -1,59 +1,64 @@
 import Link from "next/link";
+import { t, type Key, type Lang } from "@/lib/i18n";
 
 /* Kyte-style shop footer: cream ground, promo + newsletter row,
    white link-card panels, circular "cares" badge, bottom utility bar */
 
-const LINK_COLS: { heading: string; links: [string, string][] }[][] = [
+/**
+ * Two rows of three link columns. Headings and labels are dictionary keys
+ * rather than literal text, so the whole footer follows the EN/BM switch.
+ */
+const LINK_COLS: { heading: Key; links: [Key, string][] }[][] = [
   [
     {
-      heading: "Customer Service",
+      heading: "footer.customerService",
       links: [
-        ["FAQs", "/#how"],
-        ["Contact Us", "/register"],
-        ["Returns", "/#how"],
-        ["Shipping Policy", "/#how"],
+        ["footer.faqs", "/#how"],
+        ["footer.contact", "/register"],
+        ["footer.returns", "/#how"],
+        ["footer.shippingPolicy", "/#how"],
       ],
     },
     {
-      heading: "Account",
+      heading: "footer.account",
       links: [
-        ["Login", "/login"],
-        ["My Orders", "/orders"],
-        ["My Cart", "/cart"],
-        ["Apply for Wholesale", "/register"],
+        ["footer.login", "/login"],
+        ["footer.myOrders", "/orders"],
+        ["footer.myCart", "/cart"],
+        ["footer.applyWholesale", "/register"],
       ],
     },
     {
-      heading: "Useful Links",
+      heading: "footer.usefulLinks",
       links: [
-        ["Size Guide", "/catalog"],
-        ["Fabric Guide", "/catalog"],
-        ["Pricing Tiers", "/#pricing"],
+        ["footer.sizeGuide", "/catalog"],
+        ["footer.fabricGuide", "/catalog"],
+        ["footer.pricingTiers", "/#pricing"],
       ],
     },
   ],
   [
     {
-      heading: "More Goodies",
+      heading: "footer.moreGoodies",
       links: [
-        ["New Arrivals", "/catalog?sort=new"],
-        ["Bulk Deals", "/catalog?deals=1"],
-        ["Best Sellers", "/catalog"],
-        ["Seasonal Sets", "/catalog?q=set"],
+        ["footer.newArrivals", "/catalog?sort=new"],
+        ["footer.bulkDeals", "/catalog?deals=1"],
+        ["footer.bestSellers", "/catalog"],
+        ["footer.seasonalSets", "/catalog?q=set"],
       ],
     },
     {
-      heading: "About",
+      heading: "footer.about",
       links: [
-        ["Our Story", "/"],
-        ["Why Organic Cotton", "/#how"],
-        ["TinyThreads Cares", "/#how"],
-        ["Press", "/"],
+        ["footer.ourStory", "/"],
+        ["footer.whyOrganic", "/#how"],
+        ["footer.cares", "/#how"],
+        ["footer.press", "/"],
       ],
     },
     {
-      heading: "Partner With Us",
-      links: [["Wholesale", "/register"]],
+      heading: "footer.partnerWithUs",
+      links: [["footer.wholesale", "/register"]],
     },
   ],
 ];
@@ -79,9 +84,9 @@ function CircularBadge() {
   );
 }
 
-export default function KyteFooter() {
+export default function KyteFooter({ lang }: { lang: Lang }) {
   return (
-    <footer className="bg-[#F3F9FE] print:hidden">
+    <footer className="bg-[#FAF3E9] print:hidden">
       <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-14 md:px-10">
         {/* top row: brand + promo + newsletter */}
         <div className="grid gap-10 lg:grid-cols-[260px_1fr_1fr] lg:gap-14">
@@ -124,50 +129,56 @@ export default function KyteFooter() {
 
           <div>
             <div className="text-[13px] font-bold uppercase tracking-[0.1em] text-ink">
-              📦 Unlock trade pricing on your order!
+              📦 {t(lang, "footer.promoTitle")}
             </div>
             <p className="mt-2 text-sm text-ink/80">
-              Be first to know about new drops + trade deals when you open a
-              wholesale account.
+              {t(lang, "footer.promoSub")}
             </p>
             <Link
               href="/register"
               className="mt-4 inline-block rounded-lg border border-stone-300 bg-white px-5 py-2.5 text-sm font-bold text-ink transition hover:border-ink"
             >
-              Apply for Wholesale
+              {t(lang, "footer.applyWholesale")}
             </Link>
             <p className="mt-4 max-w-md text-[11px] leading-relaxed text-ink/60">
-              By applying, you consent to receive order and marketing emails
-              from TinyThreads (e.g. new collections, restock reminders).
-              Approval is not a condition of purchase. Unsubscribe at any time
-              via the link in every email.{" "}
-              <Link href="/#how" className="underline">Privacy Policy &amp; Terms</Link>.
+              {t(lang, "footer.consent")}{" "}
+              <Link href="/#how" className="underline">
+                {t(lang, "footer.privacyTerms")}
+              </Link>
+              .
             </p>
           </div>
 
           <div>
             <div className="text-[13px] font-bold uppercase tracking-[0.1em] text-ink">
-              ✉️ Sign up for new releases + deals
+              ✉️ {t(lang, "footer.newsletterTitle")}
             </div>
             <p className="mt-2 text-sm text-ink/80">
-              Get insider access to new products and promotions when you
-              subscribe to our newsletter.
+              {t(lang, "footer.newsletterSub")}
             </p>
             <form action="/register" className="mt-4 flex max-w-md">
               <input
                 name="email"
                 type="email"
-                placeholder="Your Email Address"
+                placeholder={t(lang, "footer.emailPlaceholder")}
                 className="w-full rounded-l-lg border border-r-0 border-stone-300 bg-white px-4 py-2.5 text-sm text-ink outline-none placeholder:text-stone-400"
               />
               <button className="rounded-r-lg border border-stone-300 bg-white px-5 text-sm font-bold text-ink transition hover:bg-stone-100">
-                Subscribe
+                {t(lang, "footer.subscribe")}
               </button>
             </form>
+            {/* Split around the two links so each half can be reordered by the
+                translation — Malay puts "Google" at the end of the sentence. */}
             <p className="mt-3 text-[11px] text-ink/60">
-              This site is protected by reCAPTCHA and the Google{" "}
-              <Link href="/#how" className="underline">Privacy Policy</Link> and{" "}
-              <Link href="/#how" className="underline">Terms of Service</Link> apply.
+              {t(lang, "footer.recaptchaBefore")}{" "}
+              <Link href="/#how" className="underline">
+                {t(lang, "footer.privacyPolicy")}
+              </Link>{" "}
+              {t(lang, "footer.and")}{" "}
+              <Link href="/#how" className="underline">
+                {t(lang, "footer.termsOfService")}
+              </Link>{" "}
+              {t(lang, "footer.recaptchaAfter")}
             </p>
           </div>
         </div>
@@ -181,16 +192,16 @@ export default function KyteFooter() {
                   {row.map((col) => (
                     <div key={col.heading}>
                       <div className="mb-4 text-[12px] font-bold uppercase tracking-[0.12em] text-ink">
-                        {col.heading}
+                        {t(lang, col.heading)}
                       </div>
                       <ul className="space-y-2.5">
-                        {col.links.map(([label, href]) => (
-                          <li key={label}>
+                        {col.links.map(([key, href]) => (
+                          <li key={key}>
                             <Link
                               href={href}
                               className="text-sm text-ink/70 transition hover:text-ink"
                             >
-                              {label}
+                              {t(lang, key)}
                             </Link>
                           </li>
                         ))}
@@ -206,33 +217,30 @@ export default function KyteFooter() {
             <div className="relative rounded-xl bg-white p-8">
               <CircularBadge />
               <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-ink">
-                🧸 TinyThreads Cares
+                🧸 {t(lang, "footer.cares")}
               </div>
               <p className="mt-3 max-w-[85%] text-sm leading-relaxed text-ink/70">
-                Every season, we are proud to donate a portion of our proceeds
-                to children&apos;s hospitals and early-childhood charities
-                through the TinyThreads Cares program.
+                {t(lang, "footer.caresBody")}
               </p>
               <Link
                 href="/#how"
                 className="mt-4 inline-block rounded-lg border border-stone-300 px-5 py-2.5 text-sm font-bold text-ink transition hover:border-ink"
               >
-                Learn More
+                {t(lang, "footer.learnMore")}
               </Link>
             </div>
             <div className="rounded-xl bg-white p-8">
               <div className="text-[12px] font-bold uppercase tracking-[0.12em] text-ink">
-                🤝 Join the Retailer Club
+                🤝 {t(lang, "footer.clubTitle")}
               </div>
               <p className="mt-3 text-sm leading-relaxed text-ink/70">
-                Make friends, swap merchandising tips, sell better. It&apos;s
-                all inside our private community for boutique owners.
+                {t(lang, "footer.clubBody")}
               </p>
               <Link
                 href="/register"
                 className="mt-4 inline-block rounded-lg border border-stone-300 px-5 py-2.5 text-sm font-bold text-ink transition hover:border-ink"
               >
-                Join Now
+                {t(lang, "footer.joinNow")}
               </Link>
             </div>
           </div>
@@ -242,22 +250,29 @@ export default function KyteFooter() {
         <div className="mt-10 flex flex-wrap items-center justify-between gap-4 text-xs text-ink/70">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span>
-              © TinyThreads {new Date().getFullYear()}. All rights reserved.
+              © TinyThreads {new Date().getFullYear()}.{" "}
+              {t(lang, "footer.rights")}
             </span>
-            <Link href="/#how" className="underline hover:text-ink">T&apos;s &amp; C&apos;s</Link>
-            <Link href="/#how" className="underline hover:text-ink">Privacy</Link>
-            <Link href="/#how" className="underline hover:text-ink">Accessibility</Link>
+            <Link href="/#how" className="underline hover:text-ink">
+              {t(lang, "footer.terms")}
+            </Link>
+            <Link href="/#how" className="underline hover:text-ink">
+              {t(lang, "footer.privacy")}
+            </Link>
+            <Link href="/#how" className="underline hover:text-ink">
+              {t(lang, "footer.accessibility")}
+            </Link>
           </div>
           <label className="flex items-center gap-3">
-            <span>I&apos;m shopping from:</span>
+            <span>{t(lang, "footer.shoppingFrom")}</span>
             <select
-              defaultValue="US"
+              defaultValue="MY"
               className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-ink outline-none"
             >
-              <option value="US">United States (USD $)</option>
-              <option value="BD">Bangladesh (USD $)</option>
-              <option value="UK">United Kingdom (USD $)</option>
-              <option value="EU">Europe (USD $)</option>
+              <option value="MY">{t(lang, "country.MY")}</option>
+              <option value="SG">{t(lang, "country.SG")}</option>
+              <option value="BN">{t(lang, "country.BN")}</option>
+              <option value="ID">{t(lang, "country.ID")}</option>
             </select>
           </label>
         </div>

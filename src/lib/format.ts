@@ -7,10 +7,11 @@
  */
 
 // Change these two lines to switch the store's currency.
-const CURRENCY = "USD";
-const LOCALE = "en-US";
+// Malaysian Ringgit, formatted for Malaysia (RM 6.50, 30 Sep 2026).
+const CURRENCY = "MYR";
+const LOCALE = "en-MY";
 
-/** 650 -> "$6.50" */
+/** 650 -> "RM 6.50" */
 export function money(cents: number): string {
   return new Intl.NumberFormat(LOCALE, {
     style: "currency",
@@ -24,7 +25,7 @@ export function formatDate(d: Date): string {
 }
 
 /**
- * Parse an admin price input into cents: "8.50" or "$8.50" -> 850.
+ * Parse an admin price input into sen: "8.50" or "RM 8.50" -> 850.
  *
  * Strips currency symbols and stray characters first, so admins can type
  * naturally. Returns null for anything that isn't a valid non-negative number,

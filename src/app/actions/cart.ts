@@ -14,17 +14,50 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireApprovedBuyer } from "@/lib/session";
 import { readCart, writeCart, priceCart, type CartItem } from "@/lib/cart";
+import { getLang } from "@/lib/i18n-server";
+import { packUnits } from "@/lib/pricing";
 
 export async function addToCart(formData: FormData) {
   await requireApprovedBuyer();
   const productId = String(formData.get("productId") ?? "");
   const color = String(formData.get("color") ?? "");
-  const packId = String(formData.get("packId") ?? "") || undefined;
-  const size = String(formData.get("size") ?? "") || undefined;
   const qty = Math.floor(Number(formData.get("qty") ?? 0));
 
+  // The grid uses one dropdown for both ways of buying: a loose size ("2-3Y")
+  // or a prepack, sent as "pack:<id>". The product page posts `packId`
+  // separately. Accept either.
+  const sizeField = String(formData.get("size") ?? "");
+  let packId = String(formData.get("packId") ?? "") || undefined;
+  let size: string | undefined;
+  if (sizeField.startsWith("pack:")) packId = sizeField.slice(5);
+  else size = sizeField || undefined;
+
+  // Where to send the buyer afterwards. Adding straight from a product grid
+  // should leave them in the grid rather than bouncing them to the product
+  // page. Only same-site paths are accepted — "//evil.com" would otherwise be
+  // treated as an absolute URL and redirect off the site.
+  const rawReturn = String(formData.get("returnTo") ?? "");
+  const returnTo =
+    rawReturn.startsWith("/") && !rawReturn.startsWith("//") ? rawReturn : null;
+  const back = (flag: string) =>
+    returnTo
+      ? `${returnTo}${returnTo.includes("?") ? "&" : "?"}${flag}`
+      : `/catalog?${flag}`;
+
   if (!productId || !color || qty < 1 || (!packId && !size)) {
-    redirect(`/catalog/${productId}?error=invalid`);
+    redirect(back("error=invalid"));
+  }
+
+  // The quantity box always means GARMENTS, which is how MOQs are expressed.
+  // Prepacks are sold whole, so convert units to the nearest whole pack that
+  // covers what was asked for — "I want 12" on a 6-piece pack becomes 2 packs.
+  let lineQty = qty;
+  if (packId) {
+    const pack = await prisma.pack.findUnique({ where: { id: packId } });
+    if (pack) {
+      const perPack = packUnits(pack.contents);
+      if (perPack > 0) lineQty = Math.max(1, Math.ceil(qty / perPack));
+    }
   }
 
   const cart = await readCart();
@@ -36,10 +69,10 @@ export async function addToCart(formData: FormData) {
       i.packId === packId &&
       i.size === size
   );
-  if (existing) existing.qty += qty;
-  else cart.push({ productId, color, packId, size, qty } satisfies CartItem);
+  if (existing) existing.qty += lineQty;
+  else cart.push({ productId, color, packId, size, qty: lineQty } satisfies CartItem);
   await writeCart(cart);
-  redirect(`/catalog/${productId}?added=1`);
+  redirect(back("added=1"));
 }
 
 export async function removeFromCart(formData: FormData) {
@@ -77,7 +110,9 @@ export async function placeOrder(formData: FormData) {
 
   const cart = await readCart();
   if (cart.length === 0) redirect("/cart");
-  const priced = await priceCart(cart);
+  // The line descriptions are snapshotted onto the order, so build them in the
+  // language the buyer is shopping in — that is what their invoice will say.
+  const priced = await priceCart(cart, await getLang());
   if (priced.lines.length === 0) redirect("/cart");
   // Re-check MOQs server-side: the cart page disables the button, but a buyer
   // could still post this form directly.

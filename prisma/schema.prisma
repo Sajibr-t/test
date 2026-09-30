@@ -25,20 +25,25 @@ model User {
 }
 
 model Product {
-  id          String       @id @default(cuid())
-  styleCode   String       @unique
-  name        String
-  description String?
-  category    String
-  fabric      String?
-  basePrice   Int // wholesale unit price in cents
-  moq         Int          @default(1) // minimum order quantity in units
-  active      Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-  variants    Variant[]
-  priceBreaks PriceBreak[]
-  packs       Pack[]
-  orderItems  OrderItem[]
+  id            String       @id @default(cuid())
+  styleCode     String       @unique
+  name          String
+  description   String?
+  // Bahasa Malaysia copy. Per-product rather than dictionary-based because
+  // every style needs its own wording; null falls back to the English above,
+  // so a newly added product is still listed while awaiting translation.
+  nameMs        String?
+  descriptionMs String?
+  category      String
+  fabric        String?
+  basePrice     Int // wholesale unit price in cents
+  moq           Int          @default(1) // minimum order quantity in units
+  active        Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  variants      Variant[]
+  priceBreaks   PriceBreak[]
+  packs         Pack[]
+  orderItems    OrderItem[]
 }
 
 model Variant {
