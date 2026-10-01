@@ -1,0 +1,9 @@
+# Never upload local secrets, databases or backups to Vercel.
+.env*
+!.env.example
+*.db
+*.db-journal
+.backups
+.preview
+.next
+node_modules
