@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
     // app, so the browser/React rules in the Next config don't apply to them.
     "prisma/seeds/**",
     "scripts/**",
+    "deploy/**",
   ]),
 ]);
 

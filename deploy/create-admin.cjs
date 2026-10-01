@@ -1,5 +1,7 @@
-// Creates (or resets the password of) an admin account on the server.
+// Creates (or resets the password of) an admin account. Uses Turso when
+// TURSO_DATABASE_URL is set, otherwise the local SQLite file.
 // Run from the app folder:  node deploy/create-admin.cjs
+// For Turso:                node --env-file=.env.turso deploy/create-admin.cjs
 const readline = require("node:readline/promises");
 const fs = require("node:fs");
 if (fs.existsSync(".env")) process.loadEnvFile(".env");
@@ -14,7 +16,9 @@ async function main() {
   if (!email.includes("@")) throw new Error("Enter a valid email.");
   if (password.length < 12) throw new Error("Use at least 12 characters.");
 
-  const prisma = new PrismaClient();
+  const turso = process.env.TURSO_DATABASE_URL;
+  const adapter = turso && new (require("@prisma/adapter-libsql/web").PrismaLibSQL)({ url: turso, authToken: process.env.TURSO_AUTH_TOKEN });
+  const prisma = new PrismaClient(adapter ? { adapter } : undefined);
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.user.upsert({
     where: { email },

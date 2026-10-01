@@ -14,9 +14,13 @@
     "db:deploy": "node scripts/migrate.cjs",
     "check:launch": "node scripts/check-launch.cjs",
     "db:backup": "node scripts/backup.cjs",
-    "test:browser": "node scripts/review-launch.cjs"
+    "turso:migrate": "node scripts/turso-migrate.cjs",
+    "test:browser": "node scripts/review-launch.cjs",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@prisma/adapter-libsql": "^6.19.3",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.12",
@@ -24,8 +28,8 @@
     "prisma": "^6.19.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "zod": "^4.6.5",
-    "sharp": "0.35.4"
+    "sharp": "0.35.4",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
