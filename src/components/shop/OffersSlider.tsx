@@ -68,7 +68,7 @@ export default function OffersSlider({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                 <div className="absolute inset-0 mx-auto flex max-w-[1440px] flex-col items-start justify-end px-6 pb-16 md:px-8">
-                  <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/80">
+                  <div className="text-xs font-bold uppercase tracking-[0.25em] text-white/80">
                     {eyebrow}
                   </div>
                   <h3 className="mt-2 max-w-2xl text-4xl font-semibold leading-tight text-white md:text-5xl">
@@ -91,7 +91,7 @@ export default function OffersSlider({
                 style={{ background: s.tint }}
               >
                 <div className="mx-auto w-full max-w-[1440px] px-6 md:px-8">
-                  <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-stone-400">
+                  <div className="text-xs font-bold uppercase tracking-[0.25em] text-stone-400">
                     Wholesale made simple
                   </div>
                   <h3 className="mt-2 max-w-2xl text-4xl font-semibold leading-tight text-ink md:text-5xl">

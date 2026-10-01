@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: { serverActions: { bodySizeLimit: "4mb" } },
+  images: { localPatterns: [{ pathname: "/images/**", search: "" }, { pathname: "/product-images/**" }] },
+  async headers() {
+    return [{ source: "/:path*", headers: [
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      { key: "X-Frame-Options", value: "DENY" },
+    ] }];
+  },
 };
 
 export default nextConfig;

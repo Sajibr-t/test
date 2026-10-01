@@ -22,6 +22,40 @@ model User {
   taxId        String?
   createdAt    DateTime @default(now())
   orders       Order[]
+  sessionVersion Int @default(0)
+  emailVerifiedAt DateTime?
+  savedCart String @default("[]")
+  accountTokens AccountToken[]
+}
+
+model AccountToken {
+  hash String @id
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose String
+  expiresAt DateTime
+  @@index([userId, purpose])
+}
+
+model RateLimit {
+  key String @id
+  count Int @default(1)
+  expiresAt DateTime
+}
+
+model EmailMessage {
+  id String @id @default(cuid())
+  to String
+  subject String
+  text String
+  status String @default("PENDING")
+  attempts Int @default(0)
+  lastError String?
+  createdAt DateTime @default(now())
+  sentAt DateTime?
+  lockedUntil DateTime?
+  dedupeKey String @unique
+  @@index([status, createdAt])
 }
 
 model Product {
@@ -44,6 +78,15 @@ model Product {
   priceBreaks   PriceBreak[]
   packs         Pack[]
   orderItems    OrderItem[]
+  imageUrl      String?
+  image         ProductImage?
+}
+
+model ProductImage {
+  productId String @id
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  data Bytes
+  updatedAt DateTime @updatedAt
 }
 
 model Variant {
@@ -92,6 +135,32 @@ model Order {
   createdAt   DateTime    @default(now())
   items       OrderItem[]
   invoice     Invoice?
+  checkoutKey String?     @unique
+  allocations StockAllocation[]
+  billingSnapshot String?
+  shippingSnapshot String?
+  sellerSnapshot String?
+  shippingFee Int @default(0)
+  taxAmount Int @default(0)
+  total Int?
+  trackingNumber String?
+  carrier String?
+}
+
+model StoreSettings {
+  id String @id @default("store")
+  value String
+}
+
+// Exact SKU quantities reserved by a new order, including each prepack size.
+// Legacy orders have no allocations and must never add stock on cancellation.
+model StockAllocation {
+  id        String @id @default(cuid())
+  orderId   String
+  order     Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId String
+  quantity  Int
+  @@unique([orderId, variantId])
 }
 
 model OrderItem {

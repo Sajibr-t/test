@@ -345,12 +345,12 @@ const en = {
   "auth.phone": "Phone",
   "auth.address": "Business address",
   "auth.taxId": "Tax / business registration ID",
-  "auth.minChars": "(min 8 characters)",
+  "auth.minChars": "(min 10 characters)",
   "auth.submitApplication": "Submit application",
   "auth.emailTaken":
     "An account with that email already exists — try logging in.",
   "auth.fillRequired":
-    "Please fill in all required fields (password at least 8 characters).",
+    "Please fill in all required fields (password at least 10 characters).",
   // ── orders list + invoice ──
   "orders.title": "Orders",
   "orders.none": "No orders yet.",
@@ -719,12 +719,12 @@ const ms: Record<Key, string> = {
   "auth.phone": "Telefon",
   "auth.address": "Alamat perniagaan",
   "auth.taxId": "Nombor cukai / pendaftaran perniagaan",
-  "auth.minChars": "(minimum 8 aksara)",
+  "auth.minChars": "(minimum 10 aksara)",
   "auth.submitApplication": "Hantar permohonan",
   "auth.emailTaken":
     "Akaun dengan e-mel itu sudah wujud — cuba log masuk.",
   "auth.fillRequired":
-    "Sila isi semua medan yang diperlukan (kata laluan sekurang-kurangnya 8 aksara).",
+    "Sila isi semua medan yang diperlukan (kata laluan sekurang-kurangnya 10 aksara).",
   // ── orders list + invoice ──
   "orders.title": "Pesanan",
   "orders.none": "Tiada pesanan lagi.",

@@ -23,6 +23,6 @@ export async function setLanguage(formData: FormData) {
   // Return to the page the switcher was used on. Same-site paths only —
   // an unchecked value here would be an open redirect.
   const raw = String(formData.get("returnTo") ?? "");
-  const back = raw.startsWith("/") && !raw.startsWith("//") ? raw : "/";
+  const back = raw.startsWith("/") && !raw.startsWith("//") && !/[\\\x00-\x20]/.test(raw) ? raw : "/";
   redirect(back);
 }

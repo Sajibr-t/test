@@ -36,7 +36,7 @@ export function LanguageSwitcher({
             key={l.code}
             aria-current="true"
             title={l.long}
-            className="rounded-full bg-ink px-2.5 py-1 text-[11px] font-bold text-white"
+            className="rounded-full bg-ink px-2.5 py-1 text-xs font-bold text-white"
           >
             {l.label}
           </span>
@@ -47,7 +47,7 @@ export function LanguageSwitcher({
             <button
               type="submit"
               title={`Switch to ${l.long}`}
-              className="rounded-full px-2.5 py-1 text-[11px] font-bold text-stone-500 transition hover:text-ink"
+              className="rounded-full px-2.5 py-1 text-xs font-bold text-stone-500 transition hover:text-ink"
             >
               {l.label}
             </button>

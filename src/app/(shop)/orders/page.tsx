@@ -29,7 +29,8 @@ export default async function OrdersPage() {
           .
         </p>
       ) : (
-        <table className="mt-6 w-full text-sm">
+        <div className="mt-6 overflow-x-auto" role="region" aria-label={t(lang, "orders.title")} tabIndex={0}>
+        <table className="w-full min-w-[600px] text-sm [&_td]:pr-4 [&_th]:pr-4">
           <thead>
             <tr className="border-b border-stone-300 text-left text-stone-500">
               <th className="py-2 font-medium">{t(lang, "orders.order")}</th>
@@ -64,12 +65,13 @@ export default async function OrdersPage() {
                   )}
                 </td>
                 <td className="py-3 text-right font-medium">
-                  {money(o.subtotal)}
+                  {money(o.total ?? o.subtotal)}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

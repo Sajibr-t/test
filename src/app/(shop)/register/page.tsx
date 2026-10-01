@@ -15,6 +15,7 @@ export default async function RegisterPage({
       <p className="mt-2 text-sm text-stone-500">
         {t(lang, "auth.registerIntro")}
       </p>
+      {params.error === "rate" && <p role="alert" className="mt-3 text-red-800">{lang === "ms" ? "Terlalu banyak permohonan. Cuba lagi kemudian." : "Too many applications. Please try again later."}</p>}
       {params.error === "exists" && (
         <p className="mt-3 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
           {t(lang, "auth.emailTaken")}
@@ -57,7 +58,7 @@ export default async function RegisterPage({
           <input
             name="password"
             type="password"
-            minLength={8}
+            minLength={10} maxLength={72}
             required
             className="mt-1 w-full rounded border border-stone-300 px-3 py-2"
           />

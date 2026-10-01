@@ -18,11 +18,12 @@ export default async function NewProductPage({
       {query.error === "invalid" && (
         <p className="mt-3 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
           Fill in style code, name, category, base price, and at least one
-          color and size.
+          color and size. Quantity breaks must use unique positive whole-number
+          quantities up to 100,000 and valid prices (for example, 48: 8.75).
         </p>
       )}
       <form action={createProduct} className="mt-6 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="block text-sm">
             Style code *
             <input
@@ -59,7 +60,7 @@ export default async function NewProductPage({
             className="mt-1 w-full rounded border border-stone-300 px-3 py-2"
           />
         </label>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <label className="block text-sm">
             Fabric
             <input
@@ -88,7 +89,7 @@ export default async function NewProductPage({
             />
           </label>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="block text-sm">
             Colors * <span className="text-stone-400">(comma-separated)</span>
             <input
@@ -120,7 +121,7 @@ export default async function NewProductPage({
             className="mt-1 w-full rounded border border-stone-300 px-3 py-2 font-mono"
           />
         </label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="block text-sm">
             Prepack name
             <input

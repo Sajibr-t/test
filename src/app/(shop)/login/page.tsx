@@ -13,9 +13,10 @@ export default async function LoginPage({
       <h1 className="font-display text-2xl font-bold text-brand">
         {t(lang, "auth.login")}
       </h1>
+      {params.reset && <p role="status" className="mt-3 text-green-800">{lang === "ms" ? "Kata laluan dikemas kini. Sila log masuk." : "Password updated. Please sign in."}</p>}
       {params.error && (
         <p className="mt-3 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
-          {t(lang, "auth.invalid")}
+          {params.error === "rate" ? (lang === "ms" ? "Terlalu banyak percubaan. Cuba lagi dalam 15 minit." : "Too many attempts. Try again in 15 minutes.") : t(lang, "auth.invalid")}
         </p>
       )}
       <form action={login} className="mt-6 space-y-4">
@@ -44,6 +45,7 @@ export default async function LoginPage({
           {t(lang, "auth.login")}
         </button>
       </form>
+      <Link href="/forgot-password" className="mt-4 inline-block text-sm underline">{lang === "ms" ? "Lupa kata laluan?" : "Forgot password?"}</Link>
       <p className="mt-4 text-sm text-stone-500">
         {t(lang, "auth.noAccount")}{" "}
         <Link href="/register" className="underline">

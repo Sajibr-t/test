@@ -11,74 +11,85 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { OrderError, submitOrder } from "@/lib/order-service";
+import { cartFitsStorage, cartItemSchema, selectionUnits } from "@/lib/cart-validation";
+import { shopCopy } from "@/lib/shop-copy";
 import { prisma } from "@/lib/db";
 import { requireApprovedBuyer } from "@/lib/session";
-import { readCart, writeCart, priceCart, type CartItem } from "@/lib/cart";
+import { readCart, writeCart } from "@/lib/cart";
 import { getLang } from "@/lib/i18n-server";
-import { packUnits } from "@/lib/pricing";
 
-export async function addToCart(formData: FormData) {
+export type CartFeedback = { ok: boolean; message: string; units?: number };
+
+async function addSelection(formData: FormData): Promise<CartFeedback> {
   await requireApprovedBuyer();
+  const copy = shopCopy(await getLang());
   const productId = String(formData.get("productId") ?? "");
   const color = String(formData.get("color") ?? "");
-  const qty = Math.floor(Number(formData.get("qty") ?? 0));
-
-  // The grid uses one dropdown for both ways of buying: a loose size ("2-3Y")
-  // or a prepack, sent as "pack:<id>". The product page posts `packId`
-  // separately. Accept either.
-  const sizeField = String(formData.get("size") ?? "");
-  let packId = String(formData.get("packId") ?? "") || undefined;
-  let size: string | undefined;
-  if (sizeField.startsWith("pack:")) packId = sizeField.slice(5);
-  else size = sizeField || undefined;
-
-  // Where to send the buyer afterwards. Adding straight from a product grid
-  // should leave them in the grid rather than bouncing them to the product
-  // page. Only same-site paths are accepted — "//evil.com" would otherwise be
-  // treated as an absolute URL and redirect off the site.
-  const rawReturn = String(formData.get("returnTo") ?? "");
-  const returnTo =
-    rawReturn.startsWith("/") && !rawReturn.startsWith("//") ? rawReturn : null;
-  const back = (flag: string) =>
-    returnTo
-      ? `${returnTo}${returnTo.includes("?") ? "&" : "?"}${flag}`
-      : `/catalog?${flag}`;
-
-  if (!productId || !color || qty < 1 || (!packId && !size)) {
-    redirect(back("error=invalid"));
-  }
-
-  // The quantity box always means GARMENTS, which is how MOQs are expressed.
-  // Prepacks are sold whole, so convert units to the nearest whole pack that
-  // covers what was asked for — "I want 12" on a 6-piece pack becomes 2 packs.
+  const qty = Number(formData.get("qty"));
+  const field = String(formData.get("size") ?? "");
+  const packId = field.startsWith("pack:") ? field.slice(5) : String(formData.get("packId") ?? "") || undefined;
+  const size = packId ? undefined : field || undefined;
+  if (!Number.isSafeInteger(qty) || qty < 1 || qty > 10000) return { ok: false, message: copy.invalid };
+  const product = await prisma.product.findUnique({ where: { id: productId }, include: { variants: true, packs: true } });
+  if (!product) return { ok: false, message: copy.invalid };
+  const pack = product.packs.find(p => p.id === packId);
   let lineQty = qty;
-  if (packId) {
-    const pack = await prisma.pack.findUnique({ where: { id: packId } });
-    if (pack) {
-      const perPack = packUnits(pack.contents);
-      if (perPack > 0) lineQty = Math.max(1, Math.ceil(qty / perPack));
-    }
+  if (pack) {
+    const perPack = selectionUnits(product, { productId, color, packId, qty: 1 });
+    if (perPack === null) return { ok: false, message: copy.invalid };
+    lineQty = Math.ceil(qty / perPack);
   }
-
+  const candidate = cartItemSchema.safeParse({ productId, color, packId, size, qty: lineQty });
+  if (!candidate.success) return { ok: false, message: copy.invalid };
+  const units = selectionUnits(product, candidate.data);
+  if (units === null) return { ok: false, message: copy.invalid };
   const cart = await readCart();
-  // Merge with an identical existing line if present
-  const existing = cart.find(
-    (i) =>
-      i.productId === productId &&
-      i.color === color &&
-      i.packId === packId &&
-      i.size === size
-  );
-  if (existing) existing.qty += lineQty;
-  else cart.push({ productId, color, packId, size, qty: lineQty } satisfies CartItem);
+  const existing = cart.find(i => i.productId === productId && i.color === color && i.packId === packId && i.size === size);
+  if (existing) {
+    existing.qty += lineQty;
+    if (selectionUnits(product, existing) === null) return { ok: false, message: copy.invalid };
+  } else cart.push(candidate.data);
+  if (!cartFitsStorage(cart)) return { ok: false, message: copy.full };
   await writeCart(cart);
-  redirect(back("added=1"));
+  revalidatePath("/", "layout");
+  return { ok: true, message: copy.added, units };
+}
+
+export async function addToCartInline(_previous: CartFeedback, formData: FormData): Promise<CartFeedback> {
+  return addSelection(formData);
+}
+
+export async function addToCart(formData: FormData) {
+  const result = await addSelection(formData);
+  const raw = String(formData.get("returnTo") ?? "");
+  const back = raw.startsWith("/") && !raw.startsWith("//") && !/[\\\x00-\x20]/.test(raw) ? raw : "/catalog";
+  const url = new URL(back, "https://store.invalid");
+  url.searchParams.set(result.ok ? "added" : "error", result.ok ? "1" : "invalid");
+  redirect(url.pathname + url.search);
+}
+
+export async function updateCartQuantity(formData: FormData) {
+  await requireApprovedBuyer();
+  const cart = await readCart();
+  const index = Number(formData.get("index"));
+  const qty = Number(formData.get("qty"));
+  if (!Number.isSafeInteger(index) || !cart[index] || !Number.isSafeInteger(qty) || qty < 1 || qty > 10000) redirect("/cart?error=invalid");
+  const item = { ...cart[index], qty };
+  const product = await prisma.product.findUnique({ where: { id: item.productId }, include: { variants: true, packs: true } });
+  if (!product || selectionUnits(product, item) === null) redirect("/cart?error=invalid");
+  cart[index] = item;
+  if (!cartFitsStorage(cart)) redirect("/cart?error=invalid");
+  await writeCart(cart);
+  redirect("/cart?updated=1");
 }
 
 export async function removeFromCart(formData: FormData) {
   await requireApprovedBuyer();
   const index = Number(formData.get("index"));
   const cart = await readCart();
+  if (!Number.isSafeInteger(index) || index < 0 || index >= cart.length) redirect("/cart");
   cart.splice(index, 1);
   await writeCart(cart);
   redirect("/cart");
@@ -106,56 +117,13 @@ export async function clearCart() {
  */
 export async function placeOrder(formData: FormData) {
   const user = await requireApprovedBuyer();
-  const notes = String(formData.get("notes") ?? "").trim() || null;
-
-  const cart = await readCart();
-  if (cart.length === 0) redirect("/cart");
-  // The line descriptions are snapshotted onto the order, so build them in the
-  // language the buyer is shopping in — that is what their invoice will say.
-  const priced = await priceCart(cart, await getLang());
-  if (priced.lines.length === 0) redirect("/cart");
-  // Re-check MOQs server-side: the cart page disables the button, but a buyer
-  // could still post this form directly.
-  if (priced.moqIssues.length > 0) redirect("/cart?error=moq");
-
-  // Sequential, human-friendly references: PO-1001, INV-1001, ...
-  // Note: counting rows is fine at this scale but two orders placed at the very
-  // same moment could collide — swap to a database sequence before high volume.
-  const orderCount = await prisma.order.count();
-  const invoiceCount = await prisma.invoice.count();
-  const dueDate = new Date();
-  dueDate.setDate(dueDate.getDate() + 30); // Net 30
-
-  // Order, its line items and the invoice are created in one nested write, so
-  // an order can never end up saved without its invoice.
-  const order = await prisma.order.create({
-    data: {
-      orderNumber: `PO-${1001 + orderCount}`,
-      userId: user.id,
-      status: "PENDING",
-      subtotal: priced.subtotal,
-      notes,
-      items: {
-        create: priced.lines.map((l) => ({
-          productId: l.productId,
-          variantId: l.variantId,
-          packId: l.packId,
-          description: l.description,
-          quantity: l.units,
-          unitPrice: l.unitPrice,
-          lineTotal: l.lineTotal,
-        })),
-      },
-      invoice: {
-        create: {
-          invoiceNumber: `INV-${1001 + invoiceCount}`,
-          terms: "Net 30",
-          dueDate,
-        },
-      },
-    },
-  });
-
-  await writeCart([]);
+  let order;
+  try {
+    order = await submitOrder({ userId: user.id, key: String(formData.get("checkoutKey") ?? ""), cart: await readCart(), notes: String(formData.get("notes") ?? "").trim() || null, lang: await getLang(), delivery: { name: formData.get("deliveryName"), phone: formData.get("deliveryPhone"), address: formData.get("deliveryAddress"), city: formData.get("deliveryCity"), postalCode: formData.get("deliveryPostalCode"), country: formData.get("deliveryCountry") } });
+  } catch (error) {
+    if (error instanceof OrderError) redirect("/cart?error=" + error.message);
+    console.error("Order submission failed", error instanceof Error ? error.name : "UnknownError");
+    redirect("/cart?error=retry");
+  }
   redirect(`/orders/${order.id}?placed=1`);
 }

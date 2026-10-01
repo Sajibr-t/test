@@ -127,6 +127,7 @@ npm run dev          # development server
 npm run build        # production build
 npm start            # serve the production build
 npm run lint         # eslint
+npm test             # cart validation, quantity pricing and public-data regression tests
 npm run db:migrate   # apply migrations to the local database
 npm run db:seed      # load demo catalogue + accounts
 npm run db:studio    # browse the database in Prisma Studio
@@ -136,20 +137,15 @@ npm run db:studio    # browse the database in Prisma Studio
 
 ## Before going live
 
-1. Change the seeded admin password (or delete and recreate the admin user).
-2. Set a strong random `SESSION_SECRET` in `.env` — the dev fallback is not secret.
-3. Switch `prisma/schema.prisma` from `sqlite` to `postgresql`, point
-   `DATABASE_URL` at a hosted database, then run `npx prisma migrate deploy`.
-4. Deploy to Vercel, Railway, or any Node host.
+Follow [DEPLOYMENT.md](DEPLOYMENT.md) for configuration, migration, backups, email delivery and launch checks. Progress is tracked in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
-`.env` and the local `dev.db` are gitignored and must never be committed —
-the database contains buyer accounts and password hashes.
+The store now enforces inventory, prevents duplicate checkout submissions, records delivery and invoice snapshots, saves buyer carts, supports account recovery and photo uploads, and queues transactional emails. Configure real business details in /admin/settings before enabling checkout.
 
----
+Production uses the current SQLite migrations with persistent disk storage. Switching to PostgreSQL requires a provider-specific migration baseline and data transfer; simply changing the datasource is insufficient.
 
-## Not yet implemented
+## Optional future extensions
 
-- Per-buyer price tiers (different price lists per customer group)
-- Stock enforcement (stock is tracked but does not block ordering)
-- Email notifications (approval, order confirmation)
-- Online payment option alongside invoice terms
+- Per-buyer price lists
+- Online payments and automated refunds
+- Regional shipping rates and carrier integrations
+- Multiple product images and warehouses

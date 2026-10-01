@@ -27,12 +27,13 @@ export function formatDate(d: Date): string {
 /**
  * Parse an admin price input into sen: "8.50" or "RM 8.50" -> 850.
  *
- * Strips currency symbols and stray characters first, so admins can type
- * naturally. Returns null for anything that isn't a valid non-negative number,
+ * Accepts an optional RM prefix and up to two decimal places.
+ * Returns null for anything that is not a valid non-negative amount,
  * which callers treat as a validation failure rather than silently saving 0.
  */
 export function parseMoney(input: string): number | null {
-  const n = Number(String(input).replace(/[^0-9.]/g, ""));
-  if (!Number.isFinite(n) || n < 0) return null;
-  return Math.round(n * 100);
+  const raw = String(input).trim().replace(/^RM\s*/i, "");
+  if (!/^\d+(\.\d{1,2})?$/.test(raw)) return null;
+  const cents = Math.round(Number(raw) * 100);
+  return Number.isSafeInteger(cents) && cents <= 100000000 ? cents : null;
 }

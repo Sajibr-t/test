@@ -12,7 +12,7 @@ export default async function AdminProductsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-2xl font-bold text-brand">Products</h1>
         <Link
           href="/admin/products/new"
@@ -21,7 +21,8 @@ export default async function AdminProductsPage() {
           + Add product
         </Link>
       </div>
-      <table className="mt-6 w-full text-sm">
+      <div className="mt-6 overflow-x-auto" role="region" aria-label="Products" tabIndex={0}>
+      <table className="w-full min-w-[640px] text-sm [&_td]:pr-4 [&_th]:pr-4">
         <thead>
           <tr className="border-b border-stone-300 text-left text-stone-500">
             <th className="py-2 font-medium">Style</th>
@@ -54,6 +55,7 @@ export default async function AdminProductsPage() {
           ))}
         </tbody>
       </table>
+      </div>
       {products.length === 0 && (
         <p className="mt-4 text-stone-500">No products yet — add your first.</p>
       )}

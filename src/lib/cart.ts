@@ -1,17 +1,19 @@
 /**
  * The shopping cart.
  *
- * The cart lives entirely in an httpOnly cookie — there is no cart table.
- * That keeps it simple and survives a page refresh, at the cost of a size
- * limit (~4KB of cookie), which is plenty for a wholesale order of line items.
+ * Signed-in buyers have a database-backed cart shared across devices.
+ * Anonymous carts use an httpOnly cookie. Cart actions require approval.
  *
  * Only IDs and quantities are stored in the cookie. Prices are recalculated
  * from the database on every render by `priceCart()`, so a buyer cannot tamper
  * with the cookie to give themselves a discount, and price changes in the
  * admin area are reflected immediately in open carts.
  */
+import { getUser } from "./session";
 import { cookies } from "next/headers";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "./db";
+import { cartItemSchema, selectionUnits } from "./cart-validation";
 import { unitPriceFor, packUnits, packLabel } from "./pricing";
 import {
   t,
@@ -39,11 +41,16 @@ const COOKIE = "cart";
 /** Current cart contents. Returns an empty cart if the cookie is missing or corrupt. */
 export async function readCart(): Promise<CartItem[]> {
   const store = await cookies();
-  const raw = store.get(COOKIE)?.value;
+  const user = await getUser();
+  const raw = user ? user.savedCart : store.get(COOKIE)?.value;
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((item) => {
+      const result = cartItemSchema.safeParse(item);
+      return result.success ? [result.data] : [];
+    });
   } catch {
     return [];
   }
@@ -56,8 +63,14 @@ export async function readCart(): Promise<CartItem[]> {
  * calling it while rendering a page will throw.
  */
 export async function writeCart(items: CartItem[]) {
+  const user = await getUser();
+  if (user) {
+    await prisma.user.update({where: {id: user.id}, data: {savedCart: JSON.stringify(items)}});
+    return;
+  }
   const store = await cookies();
   store.set(COOKIE, JSON.stringify(items), {
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
     sameSite: "lax",
     path: "/",
@@ -83,6 +96,9 @@ export type PricedCart = {
   subtotal: number; // cents
   /** Products below their minimum order quantity — checkout is blocked while non-empty. */
   moqIssues: { productName: string; moq: number; units: number }[];
+  invalidItems: number;
+  stockNeeds: { variantId: string; quantity: number; available: number; label: string }[];
+  stockIssues: { label: string; available: number; quantity: number }[];
 };
 
 /**
@@ -103,19 +119,25 @@ export type PricedCart = {
  */
 export async function priceCart(
   items: CartItem[],
-  lang: Lang = "en"
+  lang: Lang = "en",
+  db: Pick<Prisma.TransactionClient, "product"> = prisma
 ): Promise<PricedCart> {
   // One query for every product in the cart, rather than one per line.
-  const productIds = [...new Set(items.map((i) => i.productId))];
-  const products = await prisma.product.findMany({
+  const productIds = [...new Set(items.filter(i => cartItemSchema.safeParse(i).success).map((i) => i.productId))];
+  const products = await db.product.findMany({
     where: { id: { in: productIds } },
     include: { priceBreaks: true, packs: true, variants: true },
   });
   const byId = new Map(products.map((p) => [p.id, p]));
+  const validItems = items.map((item, index) => {
+    if (!cartItemSchema.safeParse(item).success) return { item, index, units: null };
+    const product = byId.get(item.productId);
+    return { item, index, units: product ? selectionUnits(product, item) : null };
+  }).filter(entry => entry.units !== null);
 
   // Pass 1 — total units per product, which decides the price break tier.
   const unitsByProduct = new Map<string, number>();
-  for (const item of items) {
+  for (const { item } of validItems) {
     const product = byId.get(item.productId);
     if (!product) continue; // product deleted since it was added to the cart
     const pack = item.packId
@@ -130,7 +152,8 @@ export async function priceCart(
 
   // Pass 2 — price each line using the tier earned by the product's total.
   const lines: PricedLine[] = [];
-  items.forEach((item, index) => {
+  const stockByVariant = new Map<string, { variantId: string; quantity: number; available: number; label: string }>();
+  validItems.forEach(({ item, index }) => {
     const product = byId.get(item.productId);
     if (!product) return;
     const totalUnits = unitsByProduct.get(item.productId) ?? 0;
@@ -151,6 +174,13 @@ export async function priceCart(
           )
         : undefined;
     const name = productCopy(lang, product).name;
+    const contents: Record<string, number> = pack ? JSON.parse(pack.contents) : { [item.size!]: 1 };
+    for (const [size, perSelection] of Object.entries(contents)) {
+      const sku = product.variants.find(v => v.color === item.color && v.size === size)!;
+      const previous = stockByVariant.get(sku.id);
+      stockByVariant.set(sku.id, { variantId: sku.id, quantity: (previous?.quantity ?? 0) + perSelection * item.qty,
+        available: sku.stock, label: `${name} / ${item.color} / ${size}` });
+    }
     const colourLabel = colourName(lang, item.color);
     const description = pack
       ? `${name} — ${colourLabel} / ${packName(lang, pack.name)} (${packLabel(pack.contents)}) × ${item.qty}`
@@ -184,5 +214,8 @@ export async function priceCart(
     lines,
     subtotal: lines.reduce((sum, l) => sum + l.lineTotal, 0),
     moqIssues,
+    invalidItems: items.length - validItems.length,
+    stockNeeds: [...stockByVariant.values()],
+    stockIssues: [...stockByVariant.values()].filter(need => need.quantity > need.available),
   };
 }
